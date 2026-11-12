@@ -1,0 +1,26 @@
+/* ---------- 2. Base e fundo da aplicaÃ§Ã£o ---------- */
+*{box-sizing:border-box}
+html{min-height:100%;background:var(--bg-pagina)}
+body{margin:0;min-height:100vh;color:var(--texto);font-family:var(--font);font-size:14px;line-height:1.5;
+  background:transparent;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;overflow-x:clip}
+/* Fundo Ãºnico de todas as telas: brilhos nos cantos e malha (camada fixa atrÃ¡s de tudo). */
+html::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background-image:
+    radial-gradient(ellipse 520px 520px at 0% 0%,var(--fundo-luz-verde),transparent),
+    radial-gradient(ellipse 560px 560px at 100% 100%,var(--fundo-luz-azul),transparent),
+    linear-gradient(var(--fundo-malha) 1px,transparent 1px),
+    linear-gradient(90deg,var(--fundo-malha) 1px,transparent 1px);
+  background-repeat:no-repeat,no-repeat,repeat,repeat;
+  background-position:0 0,100% 100%,0 0,0 0;
+  background-size:auto,auto,44px 44px,44px 44px}
+img,video{max-width:100%;height:auto}
+button,input,textarea,select{font-family:inherit}
+::selection{background:var(--accent);color:#fff}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--borda-forte);border-radius:9999px;border:2px solid transparent;background-clip:content-box}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* conteÃºdo da pÃ¡gina: coluna central; os elementos flutuantes ficam de fora desta regra */
+body>:not(header):not(.footer-Planora):not(script):not(.modal-overlay):not(.lg-overlay):not(.pop-tags):not(.ghost-arrasto):not(.caixa-selecao):not(.painel-lateral):not(.fundo-painel-lateral):not(.menu-tabela-flutuante):not(.menu-card-flutuante){
+  width:100%;max-width:1380px;margin-left:auto;margin-right:auto;padding-left:24px;padding-right:24px}
+body>.timeline-container,body>#conteudo-tabela,body>#estado-vazio,body>#kanban{margin-bottom:48px}

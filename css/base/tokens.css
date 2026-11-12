@@ -1,0 +1,37 @@
+/* ---------- 1. Tokens ---------- */
+:root{
+  /* superfÃ­cies */
+  --bg-pagina:#111316; --surface:#181b20; --surface-2:#20242a; --surface-3:#2a2f36; --surface-cabecalho:#14161a;
+  --vidro:rgba(24,27,32,.72); --vidro-forte:rgba(24,27,32,.9); --vidro-card:rgba(24,27,32,.96);
+  --campo:#101215; --scrim:rgba(6,8,12,.66);
+  /* linhas */
+  --borda:#2b3038; --borda-forte:#3a414b; --borda-suave:rgba(255,255,255,.07);
+  /* texto */
+  --texto:#e4e7ec; --texto-2:#9aa3ae; --texto-3:#6b7480; --titulo:#f4f6f8;
+  /* marca e estados */
+  --accent:#3b9cff; --accent-btn:#00c875; --accent-btn-h:#00b368; --on-accent:#08261a;
+  --verde-texto:#34d399; --link:#5eb0ff; --perigo:#ef4444; --ok:#22c55e; --aviso:#f59e0b;
+  --marca-grad:linear-gradient(135deg,#34d399,#22d3ee 55%,#3b82f6);
+  /* fundo da aplicaÃ§Ã£o (brilhos e malha) */
+  --fundo-luz-verde:rgba(0,200,117,.12); --fundo-luz-azul:rgba(59,130,246,.12); --fundo-malha:rgba(255,255,255,.035);
+  /* forma */
+  --raio-s:8px; --raio-m:12px; --raio-l:18px; --raio-xl:24px; --raio-pilula:9999px;
+  --sombra-m:0 12px 32px -14px rgba(0,0,0,.6); --sombra-l:0 30px 70px -28px rgba(0,0,0,.75);
+  --foco:0 0 0 3px color-mix(in srgb,var(--accent) 38%,transparent);
+  --font:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  /* nomes antigos, mantidos para o HTML/JS existente */
+  --bg:var(--campo); --pilula:var(--surface-2);
+  --card:var(--surface); --card-texto:var(--texto); --card-titulo:var(--titulo); --card-borda:var(--borda);
+  color-scheme:dark;
+}
+html[data-tema="claro"]{
+  --bg-pagina:#f3f5f9; --surface:#ffffff; --surface-2:#f1f4f8; --surface-3:#e6ebf2; --surface-cabecalho:#f8fafc;
+  --vidro:rgba(255,255,255,.74); --vidro-forte:rgba(255,255,255,.92); --vidro-card:rgba(255,255,255,.97);
+  --campo:#ffffff; --scrim:rgba(15,23,42,.42);
+  --borda:#e1e6ee; --borda-forte:#cfd7e3; --borda-suave:rgba(15,23,42,.08);
+  --texto:#1c2430; --texto-2:#5b6676; --texto-3:#8a94a3; --titulo:#0d1520;
+  --accent:#0b7bd6; --verde-texto:#047857; --link:#0b6ec0; --perigo:#dc2626; --ok:#16a34a; --aviso:#d97706;
+  --fundo-luz-verde:rgba(5,150,105,.09); --fundo-luz-azul:rgba(2,132,199,.09); --fundo-malha:rgba(15,23,42,.045);
+  --sombra-m:0 12px 30px -16px rgba(15,23,42,.22); --sombra-l:0 30px 60px -30px rgba(15,23,42,.35);
+  color-scheme:light;
+}

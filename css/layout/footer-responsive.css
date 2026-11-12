@@ -1,0 +1,673 @@
+/* ---------- 10. RodapÃ©, status, responsivo e movimento ---------- */
+.footer-Planora{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:center;margin-top:auto;padding:16px 24px;font-size:12px;color:var(--texto-2);
+  background:var(--vidro);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--borda-suave)}
+.footer-Planora .ponto{width:8px;height:8px;border-radius:50%;background:var(--accent-btn);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent-btn) 25%,transparent)}
+.footer-Planora strong{color:var(--texto);font-weight:600}
+.status-nuvem{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;color:var(--verde-texto)}
+.status-nuvem svg{display:block;width:20px;height:20px}
+.status-nuvem[data-estado="erro"]{color:var(--perigo)}
+.status-nuvem[data-estado="local"]{color:var(--texto-3)}
+.status-nuvem-spinner{animation:status-nuvem-girar .8s linear infinite}
+@keyframes status-nuvem-girar{to{transform:rotate(360deg)}}
+.controle-historico{display:inline-flex;align-items:center;gap:2px;height:36px;padding:2px;border:1px solid var(--borda);border-radius:var(--raio-m);background:var(--surface-2)}
+
+@media(max-width:1060px){
+  .topo{padding:12px 20px}
+  .timeline-container{max-width:100%!important}
+  .btn-mais-card{right:0;top:-4px;width:38px;height:38px}
+  .form-novo-card>.btn-mais-card{top:8px;right:0}
+  .timeline-card>.btn-semaforo{top:-30px;right:12px}
+  .timeline-item:first-child .timeline-card>.btn-semaforo{top:-30px;right:56px}
+  #form-novo-card:not([hidden])+#feed-timeline .timeline-item:first-child .timeline-card>.btn-semaforo{top:16px;right:12px}
+}
+@media(max-width:700px){
+  input,textarea,select{font-size:16px!important}   /* evita o zoom automÃ¡tico do iPhone */
+  body>:not(header):not(.footer-Planora):not(script):not(.modal-overlay):not(.lg-overlay):not(.pop-tags):not(.ghost-arrasto):not(.caixa-selecao):not(.painel-lateral):not(.fundo-painel-lateral):not(.menu-tabela-flutuante):not(.menu-card-flutuante){padding-left:12px;padding-right:12px}
+  .topo{padding:12px 16px;gap:10px}
+  .topo-esq{width:100%;min-width:0}
+  .topo-dir{width:100%;flex-wrap:wrap}
+  .topo-dir>.busca{order:10;flex:1 1 100%;width:100%}   /* a busca ganha uma linha prÃ³pria */
+  .topo-dir.solo{width:auto;margin-left:auto}
+  .topo:has(.topo-dir.solo) .topo-esq{width:auto;flex:1}
+  .migalha{min-width:0;font-size:13px}
+  .migalha-atual{max-width:52vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .btn-novo{padding:0 14px;white-space:nowrap}
+  .cabecalho-pagina{padding-bottom:16px;margin-bottom:16px}
+  .cabecalho-pagina .titulo-projeto{flex:1 1 60%;min-width:0;overflow-wrap:anywhere}
+  .modal-card,.lg-card{padding:22px 18px;border-radius:20px}
+  .painel-edicao{grid-template-columns:1fr 1fr}
+  .painel-edicao label:first-child{grid-column:1/-1}
+  /* tabela vira lista de cartÃµes (o cabeÃ§alho continua clicÃ¡vel para ordenar) */
+  #conteudo-tabela{width:calc(100% - 24px)}
+  .tabela-rolagem{overflow:visible}
+  table,thead,tbody{display:block;width:100%}
+  thead tr{display:flex;flex-wrap:wrap;gap:4px 16px;padding:12px 14px}
+  thead th{padding:0;border:0;font-size:11px}
+  thead th:last-child{display:none}
+  tbody tr{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:12px 14px;border-bottom:1px solid var(--borda-suave)}
+  tbody tr:last-child{border-bottom:0}
+  tbody td{padding:0;border:0}
+  tbody td:nth-child(1){order:1;flex:1 1 calc(100% - 50px);min-width:0;overflow-wrap:anywhere}
+  tbody td:nth-child(5){order:2;flex:0 0 40px;width:40px;text-align:right}
+  tbody td:nth-child(2),tbody td:nth-child(3),tbody td:nth-child(4){order:3}
+  tbody tr.em-edicao td:nth-child(5){order:4;flex:1 1 100%;width:auto;text-align:right}
+  .input-inline-tabela{max-width:none}
+  .barra-ordem{padding:10px 14px}
+  .kb-col{flex:0 0 82vw;min-width:0}
+  .kb-board{--folga:12px}
+  .kb-voltar{margin:0 12px 14px}
+  /* cards */
+  .timeline-container{padding-left:40px!important}
+  .timeline-container::before{left:16px}
+  .form-novo-card,.timeline-card{padding:20px 18px;padding-bottom:78px;border-radius:20px}
+  .timeline-card:not(:has(.btn-enviar-card)){padding-bottom:20px}
+  .card-controles{top:10px;right:10px}
+  .timeline-card.minimizado{padding:10px 16px}
+  .btn-enviar-card{right:16px;bottom:16px}
+  .label-file{padding:8px 14px}
+  .footer-Planora{padding:14px 12px;font-size:11px;gap:6px 12px;text-align:center}
+  /* workspaces e Ã¡reas */
+  .ws-theme-toggle{top:14px;right:14px}
+  .ws-secao{padding:16px;border-radius:18px}
+  .ws-secao-topo{align-items:flex-start}
+  .ws-btn-novo-workspace{min-height:36px;padding:0 12px;font-size:12px}
+  .ws-novo-linha{align-items:stretch}
+  .ws-campo{flex-basis:100%}
+  .ws-acoes-novo{width:100%}
+  .ws-btn-criar{flex:1;width:auto;padding:0 14px}
+  .ws-btn-cancelar{min-height:46px}
+  .ar-linha{grid-template-columns:auto 1fr auto}
+  .ar-uso{display:none}
+  .ar-nova{grid-template-columns:auto 1fr}
+  .ar-nova .ar-btn-pri{grid-column:1/-1}
+}
+@media(max-width:380px){
+  .btn-novo span{display:none}
+  .btn-novo{padding:0 12px}
+  .modal-card,.lg-card{padding:22px 14px}
+}
+@media(pointer:coarse){
+  .btn-ctrl{width:40px;height:36px}
+  .btn-voltar{width:40px;height:40px}
+  .btn-tabela-opcoes{padding:8px 12px}
+  .alca-arrastar{opacity:1;padding:8px 8px 8px 0;margin-right:4px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  button:active:not(:disabled){transform:none}
+  .ws-item:hover{transform:none}
+}
+/* NavegaÃ§Ã£o e gerenciamento de rÃ³tulos do Kanban */
+.kb-navegacao{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin:0 max(24px,calc((100% - 1332px)/2)) 12px}
+.kb-seta{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid var(--borda);border-radius:50%;background:var(--surface-2);color:var(--titulo);font-size:20px;cursor:pointer}
+.kb-seta:hover{background:var(--surface-3);border-color:var(--accent-btn)}
+.kb-seta[hidden]{display:none}
+.kb-paginacao{font-size:12px;color:var(--texto-2);min-width:66px;text-align:center}
+.rotulo-nome-estatico{display:flex;align-items:center;background:transparent}
+@media(max-width:700px){.kb-navegacao{margin:0 12px 10px;justify-content:space-between}.kb-paginacao{flex:1}}
+
+.topo-mais{position:relative;display:inline-flex}
+.btn-mais-opcoes{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;padding:0;border:1px solid var(--borda);border-radius:var(--raio-m);background:var(--surface-2);color:var(--texto-2);font-size:22px;line-height:1;cursor:pointer}
+.btn-mais-opcoes:hover,.btn-mais-opcoes[aria-expanded="true"]{background:var(--surface-3);border-color:var(--borda-forte);color:var(--titulo)}
+.menu-mais-opcoes{position:absolute;z-index:320;top:calc(100% + 8px);right:0;width:210px;padding:5px;background:var(--vidro-forte);border:1px solid var(--borda);border-radius:var(--raio-m);box-shadow:var(--sombra-m);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+.menu-mais-opcoes[hidden]{display:none}
+.menu-mais-opcoes button{display:block;width:100%;padding:9px 12px;border:0;border-radius:var(--raio-s);background:transparent;color:var(--texto);font:inherit;font-size:13px;text-align:left;cursor:pointer}
+.menu-mais-opcoes button:hover,.menu-mais-opcoes button:focus-visible{background:var(--surface-3);color:var(--titulo)}
+@media(max-width:700px){.topo-mais{margin-left:auto}.btn-mais-opcoes{width:40px;height:36px}}
+
+/* NavegaÃ§Ã£o moderna das janelas de rÃ³tulos */
+.kb-navegacao{justify-content:center;gap:12px;padding:4px 0}
+.kb-seta{width:40px;height:40px;border:1px solid color-mix(in srgb,var(--texto-3) 28%,transparent);border-radius:50%;background:linear-gradient(180deg,color-mix(in srgb,var(--surface-3) 88%,#fff 4%),var(--surface-2));color:var(--texto);font-size:0;box-shadow:0 5px 14px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.05);transition:transform .16s ease,border-color .16s ease,background .16s ease,box-shadow .16s ease}
+.kb-seta::before{content:'';width:8px;height:8px;border-top:1.8px solid currentColor;border-right:1.8px solid currentColor;transform:rotate(45deg) translate(-1px,1px)}
+.kb-seta:first-child::before{transform:rotate(-135deg) translate(-1px,1px)}
+.kb-seta:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--accent-btn) 55%,transparent);background:color-mix(in srgb,var(--accent-btn) 12%,var(--surface-2));box-shadow:0 8px 18px rgba(0,0,0,.24),0 0 0 3px color-mix(in srgb,var(--accent-btn) 10%,transparent)}
+.kb-seta:active{transform:translateY(0) scale(.96)}
+.kb-paginacao{min-width:78px;color:var(--texto-2);font-size:12px;font-weight:600;letter-spacing:.01em}
+
+/* NavegaÃ§Ã£o do Kanban no mesmo formato da linha "Voltar para Workspace" */
+.kb-navegacao{
+  display:grid;
+  grid-template-columns:44px minmax(90px,1fr) 44px;
+  align-items:center;
+  width:auto;
+  min-height:40px;
+  gap:8px;
+  margin:0 max(24px,calc((100% - 1332px)/2)) 14px;
+  padding:4px 8px;
+  border:1px dashed var(--borda-forte);
+  border-radius:var(--raio-m);
+  background:transparent;
+}
+.kb-seta{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:36px;
+  height:30px;
+  padding:0;
+  border:0;
+  border-radius:7px;
+  background:transparent;
+  color:var(--texto-2);
+  font:600 22px/1 Arial,sans-serif;
+  box-shadow:none;
+  cursor:pointer;
+  transition:background .15s ease,color .15s ease,opacity .15s ease;
+}
+.kb-seta::before{content:none!important}
+.kb-seta-anterior{justify-self:start}
+.kb-seta-proxima{justify-self:end}
+.kb-seta:hover:not(:disabled){background:var(--surface-2);color:var(--texto);transform:none;box-shadow:none;border-color:transparent}
+.kb-seta:active:not(:disabled){background:var(--surface-3);transform:none}
+.kb-seta:disabled{opacity:.28;cursor:default}
+.kb-paginacao{justify-self:center;min-width:0;text-align:center;color:var(--texto-2);font-size:12px;font-weight:600;letter-spacing:.01em}
+@media(max-width:700px){
+  .kb-navegacao{grid-template-columns:40px 1fr 40px;margin:0 12px 10px;padding:4px 6px}
+  .kb-seta{width:34px;height:30px}
+}
+
+/* CorreÃ§Ã£o final: mesma caixa de Voltar para Workspace e conteÃºdo nas trÃªs posiÃ§Ãµes */
+#kanban .kb-navegacao{
+  position:relative!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  box-sizing:border-box!important;
+  width:auto!important;
+  min-width:0!important;
+  min-height:0!important;
+  height:auto!important;
+  margin:0 max(24px,calc((100% - 1332px)/2)) 14px!important;
+  padding:8px 54px!important;
+  gap:0!important;
+  border:1px dashed var(--borda-forte)!important;
+  border-radius:var(--raio-m)!important;
+  background:transparent!important;
+  font-size:13px!important;
+  line-height:18px!important;
+}
+#kanban .kb-navegacao .kb-seta{
+  position:absolute!important;
+  top:50%!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  box-sizing:border-box!important;
+  width:36px!important;
+  height:28px!important;
+  min-width:36px!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:7px!important;
+  background:transparent!important;
+  color:var(--texto-2)!important;
+  font-family:Arial,sans-serif!important;
+  font-size:24px!important;
+  font-weight:400!important;
+  line-height:1!important;
+  box-shadow:none!important;
+  transform:translateY(-50%)!important;
+}
+#kanban .kb-navegacao .kb-seta::before{content:none!important}
+#kanban .kb-navegacao .kb-seta-anterior{left:8px!important;right:auto!important}
+#kanban .kb-navegacao .kb-seta-proxima{right:8px!important;left:auto!important}
+#kanban .kb-navegacao .kb-seta:hover:not(:disabled){background:var(--surface-2)!important;color:var(--texto)!important;box-shadow:none!important;transform:translateY(-50%)!important}
+#kanban .kb-navegacao .kb-seta:active:not(:disabled){background:var(--surface-3)!important;transform:translateY(-50%)!important}
+#kanban .kb-navegacao .kb-seta:disabled{display:flex!important;opacity:.28!important;cursor:default!important}
+#kanban .kb-navegacao .kb-paginacao{
+  display:block!important;
+  width:auto!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  color:var(--texto-2)!important;
+  font-size:13px!important;
+  font-weight:500!important;
+  line-height:18px!important;
+  text-align:center!important;
+  white-space:nowrap!important;
+}
+@media(max-width:700px){
+  #kanban .kb-navegacao{margin:0 12px 10px!important;padding:8px 50px!important}
+  #kanban .kb-navegacao .kb-seta-anterior{left:6px!important}
+  #kanban .kb-navegacao .kb-seta-proxima{right:6px!important}
+}
+
+
+/* RÃ³tulos acima das Ã¡reas e metadados em bolhas */
+.rot-painel-lista,.ar-painel-lista{display:flex;flex-direction:column;gap:7px;margin:0;padding:0;list-style:none}
+.rot-painel-lista li,.ar-painel-lista li{display:flex;align-items:center;gap:8px;min-width:0;padding:2px 10px;font-size:13px;color:var(--texto)}
+.rot-painel-bolha,.ar-painel-nome{display:inline-flex;align-items:center;min-width:0;max-width:calc(100% - 34px);padding:4px 9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border:1px solid color-mix(in srgb,var(--cor-rotulo,var(--cor-area)) 48%,var(--borda));border-radius:var(--raio-pilula);color:var(--texto);background:color-mix(in srgb,var(--cor-rotulo,var(--cor-area)) 16%,var(--surface-2))}
+.ar-painel-lista .ar-ponto{display:none}
+.rot-painel-qtd,.ar-painel-qtd{margin-left:auto;flex:0 0 auto;font-size:12px;color:var(--texto-3)}
+.kb-area,.kb-prazo,.pilula-prazo{display:inline-flex;align-items:center;width:max-content;max-width:100%;padding:3px 9px;border-radius:var(--raio-pilula);font-size:12px;font-weight:600;line-height:1.25;white-space:nowrap}
+.kb-area{margin-left:6px;vertical-align:middle}
+.kb-prazo,.pilula-prazo{color:var(--texto-2);background:var(--surface-2);border:1px solid var(--borda)}
+.kb-prazo.prazo-hoje,.pilula-prazo.prazo-hoje{color:#fbbf24;background:rgba(245,158,11,.14);border-color:rgba(245,158,11,.55)}
+.kb-prazo.prazo-vencido,.pilula-prazo.prazo-vencido{color:#f87171;background:rgba(239,68,68,.14);border-color:rgba(239,68,68,.58)}
+
+
+/* =====================================================================
+   Header mobile definitivo
+   Otimizado para smartphones de 360px atÃ© 700px
+   ===================================================================== */
+
+@media (max-width: 700px) {
+  /* Header ocupa toda a largura real da tela */
+  header.topo:not(:has(.topo-dir.solo)) {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    display: grid !important;
+    grid-template-columns: 40px 42px minmax(0, 1fr) 68px 42px;
+    grid-template-rows: 48px 52px;
+    grid-template-areas:
+      "menu logo caminho historico tema"
+      "busca busca busca busca novo";
+
+    align-items: center;
+    gap: 8px 6px;
+
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+
+    margin: 0 0 18px !important;
+    padding:
+      max(7px, env(safe-area-inset-top))
+      max(10px, env(safe-area-inset-right))
+      9px
+      max(10px, env(safe-area-inset-left)) !important;
+
+    background: color-mix(
+      in srgb,
+      var(--surface-cabecalho) 96%,
+      transparent
+    );
+
+    border-bottom: 1px solid var(--borda);
+    border-radius: 0;
+    overflow: visible;
+
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    backdrop-filter: blur(18px) saturate(160%);
+  }
+
+  /*
+   * Os dois agrupadores deixam de ocupar espaÃ§o.
+   * Os elementos internos passam a participar diretamente do grid.
+   */
+  header.topo:not(:has(.topo-dir.solo)) > .topo-esq,
+  header.topo:not(:has(.topo-dir.solo)) > .topo-dir {
+    display: contents !important;
+  }
+
+  /* Menu lateral */
+  header.topo:not(:has(.topo-dir.solo)) .btn-menu-lateral {
+    grid-area: menu;
+    align-self: center;
+    justify-self: start;
+
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+
+    width: 40px !important;
+    min-width: 40px !important;
+    height: 40px !important;
+    padding: 0 !important;
+
+    border-radius: 10px;
+    color: var(--texto-2);
+  }
+
+  header.topo:not(:has(.topo-dir.solo)) .btn-menu-lateral svg {
+    width: 23px;
+    height: 23px;
+    stroke-width: 2.2;
+  }
+
+  /* Logo */
+  header.topo:not(:has(.topo-dir.solo)) .marca-P {
+    grid-area: logo;
+    align-self: center;
+    justify-self: start;
+
+    display: block !important;
+    flex: none !important;
+
+    width: 42px !important;
+    min-width: 42px !important;
+    height: 42px !important;
+
+    border-radius: 11px;
+  }
+
+  header.topo:not(:has(.topo-dir.solo)) .marca-P img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Nome do workspace */
+  header.topo:not(:has(.topo-dir.solo)) .migalha {
+    grid-area: caminho;
+    align-self: center;
+
+    display: flex !important;
+    align-items: center;
+    gap: 5px;
+
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+
+    font-size: 14px;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  header.topo:not(:has(.topo-dir.solo)) .migalha .sep {
+    flex: 0 0 auto;
+    color: var(--texto-3);
+    font-size: 16px;
+  }
+
+  header.topo:not(:has(.topo-dir.solo)) .migalha-link,
+  header.topo:not(:has(.topo-dir.solo)) .migalha-atual {
+    display: block;
+    flex: 1 1 auto;
+
+    min-width: 0;
+    max-width: 100%;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: var(--verde-texto);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+
+  /* HistÃ³rico compacto */
+  header.topo:not(:has(.topo-dir.solo)) .controle-historico {
+    grid-area: historico;
+    align-self: center;
+    justify-self: end;
+
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+
+    width: 68px !important;
+    min-width: 68px !important;
+    height: 38px !important;
+    padding: 2px !important;
+
+    border: 1px solid var(--borda);
+    border-radius: 11px;
+    background: var(--surface-2);
+  }
+
+  header.topo:not(:has(.topo-dir.solo)) .btn-historico {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 31px !important;
+    min-width: 31px !important;
+    height: 32px !important;
+    padding: 0 !important;
+  }
+
+  header.topo:not(:has(.topo-dir.solo)) .btn-historico svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* BotÃ£o de tema */
+  header.topo:not(:has(.topo-dir.solo)) .btn-tema {
+    grid-area: tema;
+    align-self: center;
+    justify-self: end;
+
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+
+    width: 42px !important;
+    min-width: 42px !important;
+    height: 42px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    border-radius: 50%;
+    background: var(--surface-2);
+  }
+
+  header.topo:not(:has(.topo-dir.solo)) .btn-tema svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  /* Busca */
+  header.topo:not(:has(.topo-dir.solo)) .busca {
+    grid-area: busca;
+    align-self: stretch;
+
+    display: flex !important;
+    align-items: center;
+
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 52px !important;
+    margin: 0 !important;
+    padding: 2px !important;
+
+    border: 1px solid var(--borda);
+    border-radius: 15px;
+    background: var(--surface-2);
+  }
+
+  header.topo:not(:has(.topo-dir.solo)) .busca svg {
+    position: absolute;
+    left: 15px;
+
+    width: 19px;
+    height: 19px;
+
+    color: var(--texto-3);
+  }
+
+  header.topo:not(:has(.topo-dir.solo)) .busca input {
+    display: block;
+
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 48px !important;
+    margin: 0 !important;
+    padding: 0 14px 0 45px !important;
+
+    border: 0;
+    border-radius: 13px;
+    background: transparent;
+
+    color: var(--texto);
+    font-size: 16px !important;
+    line-height: normal;
+  }
+
+  header.topo:not(:has(.topo-dir.solo)) .busca input::placeholder {
+    color: var(--texto-3);
+    font-size: 16px;
+    opacity: 1;
+  }
+
+  /* Nova pÃ¡gina vira botÃ£o quadrado com + */
+  header.topo:not(:has(.topo-dir.solo)) #topo-novo {
+    grid-area: novo;
+    align-self: stretch;
+    justify-self: end;
+
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+
+    width: 52px !important;
+    min-width: 52px !important;
+    max-width: 52px !important;
+    height: 52px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    border: 0;
+    border-radius: 15px;
+
+    background: var(--accent-btn);
+    color: var(--on-accent);
+  }
+
+  header.topo:not(:has(.topo-dir.solo)) #topo-novo span {
+    display: none !important;
+  }
+
+  header.topo:not(:has(.topo-dir.solo)) #topo-novo svg {
+    width: 23px;
+    height: 23px;
+    stroke-width: 2.7;
+  }
+
+  /* Controles retirados apenas do header mobile */
+  header.topo:not(:has(.topo-dir.solo)) .topo-visao,
+  header.topo:not(:has(.topo-dir.solo)) #topo-nova-pasta,
+  header.topo:not(:has(.topo-dir.solo)) .topo-mais {
+    display: none !important;
+  }
+
+  /*
+   * O JS calcula --topo-altura apÃ³s tamanho e resize.
+   * Estes valores sÃ£o apenas fallback.
+   */
+  .painel-lateral,
+  .fundo-painel-lateral {
+    top: var(--topo-altura, 126px);
+  }
+}
+
+/* Pixel e celulares prÃ³ximos de 412px */
+@media (min-width: 390px) and (max-width: 430px) {
+  header.topo:not(:has(.topo-dir.solo)) {
+    grid-template-columns: 40px 42px minmax(0, 1fr) 68px 42px;
+    gap: 8px 6px;
+    padding-right: 10px !important;
+    padding-left: 10px !important;
+  }
+
+  header.topo:not(:has(.topo-dir.solo)) .migalha-link,
+  header.topo:not(:has(.topo-dir.solo)) .migalha-atual {
+    font-size: 13px;
+  }
+}
+
+/* Smartphones menores */
+@media (max-width: 389px) {
+  header.topo:not(:has(.topo-dir.solo)) {
+    grid-template-columns: 38px 40px minmax(0, 1fr) 64px 40px;
+    column-gap: 5px;
+    padding-right: 8px !important;
+    padding-left: 8px !important;
+  }
+
+  header.topo:not(:has(.topo-dir.solo)) .btn-menu-lateral {
+    width: 38px !important;
+    min-width: 38px !important;
+    height: 38px !important;
+  }
+
+  header.topo:not(:has(.topo-dir.solo)) .marca-P,
+  header.topo:not(:has(.topo-dir.solo)) .btn-tema {
+    width: 40px !important;
+    min-width: 40px !important;
+    height: 40px !important;
+  }
+
+  header.topo:not(:has(.topo-dir.solo)) .controle-historico {
+    width: 64px !important;
+    min-width: 64px !important;
+  }
+
+  header.topo:not(:has(.topo-dir.solo)) .btn-historico {
+    width: 29px !important;
+    min-width: 29px !important;
+  }
+
+  header.topo:not(:has(.topo-dir.solo)) .migalha-link,
+  header.topo:not(:has(.topo-dir.solo)) .migalha-atual {
+    font-size: 12.5px;
+  }
+}
+
+/* Menos de 350px: histÃ³rico sai para preservar logo, nome e tema */
+@media (max-width: 349px) {
+  header.topo:not(:has(.topo-dir.solo)) {
+    grid-template-columns: 38px 40px minmax(0, 1fr) 40px;
+    grid-template-areas:
+      "menu logo caminho tema"
+      "busca busca busca novo";
+  }
+
+  header.topo:not(:has(.topo-dir.solo)) .controle-historico {
+    display: none !important;
+  }
+}
+
+
+/* ---------- Padronização visual das pílulas ---------- */
+:root{--altura-pilula-ui:30px;--padding-pilula-ui:0 14px;--fonte-pilula-ui:12px}
+.selo,
+.selo-rotulo,
+.pilula-area,
+.pilula-prazo,
+.tag-bolha,
+.kb-area,
+.kb-prazo{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  box-sizing:border-box;
+  min-height:var(--altura-pilula-ui);
+  height:var(--altura-pilula-ui);
+  padding:var(--padding-pilula-ui);
+  border-radius:999px;
+  font-size:var(--fonte-pilula-ui);
+  font-weight:600;
+  line-height:1;
+  white-space:nowrap;
+}
+.tag-bolha{gap:6px;border:1px solid color-mix(in srgb,currentColor 25%,transparent)}
+.tag-bolha.tag-removivel{padding-right:8px}
+.tag-bolha.tag-removivel button{display:grid;place-items:center;width:18px;height:18px;margin:0 -2px 0 2px;padding:0;border:0;border-radius:50%;line-height:1}
+/* Botões circulares permanecem circulares, mas usam a mesma altura visual. */
+.btn-adicionar-tag,.btn-tag-adicionar{width:var(--altura-pilula-ui);height:var(--altura-pilula-ui);min-width:var(--altura-pilula-ui);padding:0;border-radius:50%}
+
+
+/* Criação de card no header e semáforo dentro do cabeçalho do card */
+.btn-mais-card{display:none!important}
+.timeline-card>.btn-semaforo{display:none!important}
+.card-cabecalho-conteudo .btn-semaforo{display:block!important;position:static!important;top:auto!important;right:auto!important}
+@media(max-width:700px){
+  .card-cabecalho-conteudo{gap:9px;padding-right:96px}
+  .card-cabecalho-conteudo .btn-semaforo{flex-basis:18px;width:18px;height:18px}
+  #topo-acao span{display:none}
+  #topo-acao{width:36px;height:36px;padding:0;justify-content:center}
+}

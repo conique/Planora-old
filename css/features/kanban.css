@@ -1,0 +1,48 @@
+/* ---------- 7. Kanban ---------- */
+.visao-toggle{display:inline-flex;padding:2px;border:1px solid var(--borda);border-radius:var(--raio-pilula);background:var(--surface-2)}
+.visao-toggle button{border:0;background:transparent;color:var(--texto-2);padding:4px 12px;border-radius:var(--raio-pilula);font-size:12px;font-weight:600;cursor:pointer}
+.visao-toggle button:hover{color:var(--texto)}
+.visao-toggle button.on{background:var(--accent-btn);color:var(--on-accent)}
+.kanban[hidden]{display:none}
+.barra-visao{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-bottom:12px}
+.barra-visao[hidden]{display:none}
+.visao-dica{font-size:12px;color:var(--texto-2)}
+body>#kanban{max-width:none!important;padding:0!important}
+.kb-voltar{margin:0 max(24px,calc((100% - 1332px)/2)) 14px;padding:8px 14px;border:1px dashed var(--borda-forte);border-radius:var(--raio-m);font-size:13px;color:var(--texto-2);cursor:pointer}
+.kb-voltar:hover{background:var(--surface-2);color:var(--texto)}
+.kb-voltar.drop-dentro{outline:2px solid var(--accent-btn);background:color-mix(in srgb,var(--accent-btn) 10%,transparent)}
+/* o quadro vai de ponta a ponta; a rolagem comeÃ§a alinhada Ã  caixa da tabela */
+.kb-board{--folga:max(24px,calc((100% - 1332px)/2));display:flex;gap:14px;align-items:flex-start;overflow-x:auto;margin:0;padding:0 var(--folga) 14px;scroll-padding-left:var(--folga);scroll-snap-type:x proximity}
+.kb-col{flex:1 1 0;min-width:220px;min-height:160px;padding:14px 12px 12px;scroll-snap-align:start;background:var(--vidro);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  border:1px solid var(--borda);border-radius:var(--raio-l)}
+.kb-col.drop-col{outline:2px solid var(--accent-btn);outline-offset:-2px}
+.kb-col.arrastando-origem{opacity:.4}
+.kb-col.drop-esq{box-shadow:-4px 0 0 var(--accent-btn)}
+.kb-col.drop-dir{box-shadow:4px 0 0 var(--accent-btn)}
+.kb-col-topo{display:flex;align-items:baseline;gap:10px;padding:0 4px 10px;margin-bottom:12px;border-bottom:2px solid var(--cor-col);cursor:grab;user-select:none}
+.kb-col-topo h3{margin:0;font-size:15px;font-weight:600;color:var(--titulo)}
+.kb-col-alca{margin:0 -2px 0 0;font-size:13px;opacity:.35}
+.kb-col-topo:hover .kb-col-alca{opacity:1}
+.kb-conta{padding-left:10px;border-left:1px solid var(--borda);font-size:13px;color:var(--texto-2)}
+.kb-lista{display:flex;flex-direction:column;gap:10px;min-height:40px}
+.kb-vazio{padding:14px 8px;text-align:center;font-size:12px;color:var(--texto-2)}
+.kb-card{position:relative;padding:12px 14px;cursor:pointer;background:var(--surface);border:1px solid var(--borda);border-left:4px solid var(--cor-card);border-radius:var(--raio-m);transition:transform .15s,box-shadow .15s}
+.kb-card:hover{transform:translateY(-1px);box-shadow:var(--sombra-m)}
+.kb-card-topo{display:flex;align-items:center;gap:8px}
+.kb-card .btn-card-opcoes{position:static;flex:0 0 auto;padding:4px}
+.kb-card .menu-card-flutuante{top:40px;right:8px}
+body>.menu-card-flutuante{z-index:300}
+.kb-titulo{flex:1;min-width:0;font-size:14px;font-weight:500;line-height:1.4;color:var(--texto);overflow-wrap:anywhere}
+.kb-meta,.kb-tags{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:10px}
+.kb-prazo{padding:2px 8px;border:1px solid var(--borda);border-radius:6px;font-size:12px;color:var(--texto-2)}
+.kb-card.arrastando-origem{opacity:.35}
+.kb-card.drop-acima{box-shadow:0 -3px 0 var(--accent-btn)}
+.kb-card.drop-abaixo{box-shadow:0 3px 0 var(--accent-btn)}
+.kb-card.drop-dentro{outline:2px solid var(--accent-btn);background:color-mix(in srgb,var(--accent-btn) 8%,var(--surface))}
+.kb-card.selecionado{outline:2px solid var(--accent-btn);outline-offset:1px;background:color-mix(in srgb,var(--accent-btn) 24%,var(--surface))}
+/* editar os dados do projeto na prÃ³pria pÃ¡gina */
+.painel-edicao{flex:1 1 100%;display:grid;grid-template-columns:minmax(0,2fr) repeat(3,minmax(0,1fr));gap:12px;padding:16px;background:var(--vidro);border:1px solid var(--borda);border-radius:var(--raio-l)}
+.painel-edicao[hidden]{display:none}
+.painel-edicao label{display:flex;flex-direction:column;gap:6px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--texto-2)}
+.painel-edicao .input-inline-tabela,.painel-edicao .select-inline-tabela{width:100%;max-width:none;font-size:14px;font-weight:400;letter-spacing:0;text-transform:none}
+.ed-acoes{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px}

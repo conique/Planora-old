@@ -1,0 +1,40 @@
+/* ---------- 4. BotÃµes ---------- */
+/* Ã­cone / fantasma */
+.btn-fechar-painel,.btn-ctrl,.btn-tabela-opcoes,.btn-card-opcoes,.btn-fechar,.btn-historico{display:inline-flex;align-items:center;justify-content:center;
+  border:0;background:transparent;color:var(--texto-2);cursor:pointer;border-radius:var(--raio-s)}
+.btn-fechar-painel{width:30px;height:30px;padding:0;font-size:24px;line-height:1}
+.btn-fechar{padding:0 4px;font-size:26px;line-height:1}
+.btn-ctrl{width:36px;height:30px;padding:0}
+.btn-tabela-opcoes,.btn-card-opcoes{padding:4px 8px;font-size:18px;line-height:1}
+.btn-card-opcoes{position:absolute;top:18px;right:18px}
+.btn-historico{width:30px;height:30px;padding:0;border-radius:7px}
+.btn-fechar-painel:hover,.btn-ctrl:hover,.btn-tabela-opcoes:hover,.btn-card-opcoes:hover,.btn-fechar:hover,.btn-historico:hover:not(:disabled){background:var(--surface-3);color:var(--titulo)}
+.btn-historico:disabled{opacity:.35;cursor:default}
+/* Ã­cone com contorno */
+.btn-tema,.btn-voltar,.btn-editar-dados{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;padding:0;border:1px solid var(--borda);
+  background:var(--surface-2);color:var(--texto-2);cursor:pointer;text-decoration:none}
+.btn-tema{width:36px;height:36px;border-radius:50%}
+.btn-voltar{width:34px;height:34px;border-radius:var(--raio-s);font-size:20px;line-height:1}
+.btn-editar-dados{width:28px;height:28px;border-radius:50%;background:transparent}
+.btn-tema:hover,.btn-voltar:hover,.btn-editar-dados:hover{background:var(--surface-3);color:var(--titulo);border-color:var(--borda-forte)}
+/* contorno com texto */
+.btn-ordem,.btn-cancelar-edicao,.btn-rodape,.aba,.ws-btn-novo-workspace,.ws-btn-cancelar,.ws-painel-acao,.ar-btn-sec{display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  background:transparent;border:1px solid var(--borda);color:var(--texto);border-radius:var(--raio-pilula);font-weight:600;cursor:pointer;white-space:nowrap}
+.btn-ordem,.btn-cancelar-edicao,.ar-btn-sec{padding:6px 14px;font-size:12.5px}
+.btn-rodape{padding:4px 12px;font-size:11.5px;color:var(--texto-2)}
+.aba{padding:8px 14px;font-size:13px;font-weight:500}
+.btn-ordem:hover,.btn-cancelar-edicao:hover,.btn-rodape:hover,.aba:hover,.aba.ativa,.ws-btn-novo-workspace:hover,.ws-btn-cancelar:hover,.ws-painel-acao:hover,.ar-btn-sec:hover{
+  background:var(--surface-2);border-color:var(--borda-forte);color:var(--titulo)}
+/* principal: verde da marca com texto escuro, em qualquer tema */
+.btn-novo,.btn-criar-destaque,.btn-salvar,.btn-enviar-card,.lg-principal,.btn-salvar-inline,.nota-nova button,.ws-btn-criar,.ws-painel-acao.principal,.ar-btn-pri{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:var(--raio-pilula);background:var(--accent-btn);color:var(--on-accent);
+  font-weight:700;cursor:pointer;box-shadow:0 6px 16px -8px color-mix(in srgb,var(--accent-btn) 70%,transparent);transition:filter .15s,transform .15s}
+.btn-novo{padding:7px 14px;font-size:12.5px;border-radius:var(--raio-m)}
+.btn-criar-destaque,.btn-salvar{padding:10px 22px;font-size:13px}
+.btn-salvar-inline,.ar-btn-pri{padding:6px 14px;font-size:12.5px}
+.btn-novo:hover,.btn-criar-destaque:hover,.btn-salvar:hover,.btn-enviar-card:hover,.lg-principal:hover,.btn-salvar-inline:hover,.nota-nova button:hover,.ws-btn-criar:hover,.ws-painel-acao.principal:hover,.ar-btn-pri:hover{
+  background:var(--accent-btn);filter:brightness(1.1)}
+button:disabled{cursor:not-allowed}
+button:active:not(:disabled){transform:scale(.97)}
+button,[role="button"]{-webkit-tap-highlight-color:transparent;transition:transform .12s ease,filter .15s ease,background-color .15s ease,border-color .15s ease,color .15s ease}
+.btn-novo svg{flex:0 0 auto}

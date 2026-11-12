@@ -1,0 +1,50 @@
+/* ---------- 3. CabeÃ§alho e painel lateral ---------- */
+.topo{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+  padding:14px 24px;margin:0 0 28px;background:var(--vidro);border-bottom:1px solid var(--borda-suave);
+  -webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%)}
+.topo::after{content:"";position:absolute;left:0;bottom:-1px;width:100%;height:1px;pointer-events:none;
+  background:linear-gradient(90deg,transparent,#34d399 25%,#22d3ee 55%,#3b82f6 80%,transparent);opacity:.85}
+.topo-esq,.topo-dir{display:flex;align-items:center;gap:12px}
+.topo-dir>.btn-tema{margin-left:auto}
+.topo-dir>.topo-visao,.topo-dir>.controle-historico,.topo-dir>.busca,.topo-dir>.btn-novo,.topo-dir>.btn-tema{height:36px}
+.topo-dir>.topo-visao,.topo-dir>.busca{display:flex;align-items:center}
+.topo-dir>.busca input{height:36px;padding-top:0;padding-bottom:0}
+.topo-dir>.btn-novo{justify-content:center;padding-top:0;padding-bottom:0}
+.topo-dir>.topo-visao .visao-toggle{height:36px;align-items:center}
+.topo-dir>.topo-visao .visao-toggle button{height:30px}
+.topo-visao{display:inline-flex}.topo-visao[hidden]{display:none}
+.marca-P{display:block;flex:0 0 34px;width:34px;height:34px;border-radius:10px;overflow:hidden;text-decoration:none;
+  box-shadow:0 0 0 1px var(--borda-suave);transition:transform .15s,box-shadow .15s}
+.marca-P img{display:block;width:100%;height:100%;object-fit:cover}
+.marca-P:hover{transform:scale(1.05);box-shadow:0 6px 16px -6px rgba(34,211,238,.55)}
+.migalha{display:flex;align-items:center;gap:8px;font-size:14px}
+.migalha .sep{color:var(--texto-3)}
+.migalha-link{color:var(--titulo);font-weight:500;text-decoration:none}
+.migalha-link:hover{text-decoration:underline}
+.migalha-atual{color:var(--verde-texto);font-weight:600;letter-spacing:.01em}
+.busca{position:relative;display:flex;align-items:center;width:224px;padding:2px;border:1px solid var(--borda);border-radius:var(--raio-m);background:var(--surface-2)}
+.busca svg{position:absolute;left:11px;color:var(--texto-3);pointer-events:none}
+.busca input{width:100%;padding:7px 12px 7px 32px;font-size:12.5px;background:transparent;border:0;border-radius:var(--raio-s);color:var(--texto)}
+.busca input::placeholder{color:var(--texto-3)}
+.busca input:focus{outline:0;box-shadow:none}
+.busca:focus-within{border-color:var(--accent);box-shadow:var(--foco)}
+.cabecalho-pagina{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding-bottom:24px;margin-bottom:24px;border-bottom:1px solid var(--borda-suave)}
+.cabecalho-pagina .titulo-projeto{margin:0;font-size:clamp(20px,2.4vw,26px);font-weight:700;color:var(--titulo);letter-spacing:-.02em}
+.titulo-projeto{margin:0;font-size:15px;font-weight:500;color:var(--verde-texto);letter-spacing:.01em}
+/* painel lateral */
+.btn-menu-lateral{display:inline-flex;align-items:center;justify-content:center;flex:0 0 34px;width:34px;height:34px;padding:0;border:0;border-radius:var(--raio-s);
+  background:transparent;color:var(--texto-2);cursor:pointer}
+.btn-menu-lateral:hover,.btn-menu-lateral[aria-expanded="true"]{background:var(--surface-2);color:var(--texto)}
+.btn-menu-lateral svg{transform:rotate(0);transition:transform .28s cubic-bezier(.2,.8,.2,1)}
+.btn-menu-lateral[aria-expanded="true"] svg{transform:rotate(90deg)}
+.painel-lateral{position:fixed;z-index:39;top:var(--topo-altura,72px);bottom:0;left:0;width:min(340px,90vw);padding:20px;overflow-y:auto;
+  background:var(--vidro-forte);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border-right:1px solid var(--borda);box-shadow:var(--sombra-l);
+  transform:translateX(-105%);visibility:hidden;transition:transform .22s ease,visibility .22s}
+.painel-lateral.aberto{transform:translateX(0);visibility:visible}
+.painel-lateral-topo{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--borda)}
+.painel-lateral-topo h2{margin:0;font-size:16px;font-weight:700;color:var(--titulo)}
+.painel-lateral-vazio{margin:18px 0;color:var(--texto-2);font-size:13px;line-height:1.5}
+.painel-secao{margin-top:22px}
+.painel-secao-titulo{margin:0 0 10px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--texto-3)}
+.fundo-painel-lateral{position:fixed;z-index:38;top:var(--topo-altura,72px);right:0;bottom:0;left:0;width:100%;padding:0;border:0;background:var(--scrim);cursor:default}
+.fundo-painel-lateral[hidden]{display:none}
