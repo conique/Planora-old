@@ -5,7 +5,7 @@
 .lg-overlay.ws-overlay,.lg-overlay.lg-pagina{background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}
 .lg-card{max-height:calc(100vh - 32px);overflow-y:auto;text-align:left}
 .lg-logo{display:flex;align-items:center;justify-content:center;width:56px;height:56px;margin:0 0 16px;overflow:hidden;border-radius:16px;background:var(--surface-2);
-  color:var(--texto);font-size:22px;font-weight:700;box-shadow:0 10px 24px -12px rgba(34,211,238,.55)}
+  color:var(--texto);font-size:22px;font-weight:700}
 .lg-logo img{display:block;width:100%;height:100%;object-fit:cover}
 .lg-logo.ok{box-shadow:none;border:1px solid var(--borda)}
 .lg-card h2{margin:0 0 6px;font-size:22px;font-weight:700;color:var(--titulo);letter-spacing:-.01em}
@@ -36,7 +36,7 @@ html[data-auth="login"] body>:not(.lg-overlay):not(script){visibility:hidden}
 .ws-conteudo{position:relative;display:flex;flex-direction:column;gap:28px;width:100%;max-width:880px;min-height:100%;margin:0 auto;padding:clamp(32px,7vh,80px) 24px 28px;animation:ws-entrar .5s ease both}
 @keyframes ws-entrar{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .ws-hero{text-align:center}
-.ws-marca{display:flex;align-items:center;justify-content:center;width:68px;height:68px;margin:0 auto 18px;overflow:hidden;border-radius:20px;box-shadow:0 16px 36px -14px rgba(34,211,238,.6)}
+.ws-marca{display:flex;align-items:center;justify-content:center;width:68px;height:68px;margin:0 auto 18px;overflow:hidden;border-radius:20px}
 .ws-marca img{display:block;width:100%;height:100%;object-fit:cover}
 .ws-ola{margin:0 0 8px;font-size:14px;color:var(--texto-2)}
 .ws-ola strong{color:var(--texto);font-weight:600}
