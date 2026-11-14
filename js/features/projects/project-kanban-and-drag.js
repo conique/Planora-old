@@ -288,14 +288,15 @@ function salvarInicioRotulosKanban() {
 function abrirGerenciadorRotulos() {
     if (document.querySelector('.rotulos-overlay')) return;
     const PALETA_ROTULOS = ['#0ea5e9','#10b981','#dc2626','#64748b','#a855f7','#f59e0b','#06b6d4','#ec4899','#84cc16','#f97316'];
-    let rascunho = opcoesRotulos.map(r => ({ orig: r.nome, nome: r.nome, cor: obterCorRotulo(r.nome), removida: false }));
+    const ordemInicial = visaoAtual === 'kanban' ? ordemColunas() : opcoesRotulos.map(r => r.nome);
+    let rascunho = ordemInicial.map(nome => ({ orig: nome, nome, cor: obterCorRotulo(nome), removida: false }));
     let paletaAberta = null;
     let corNova = PALETA_ROTULOS[rascunho.length % PALETA_ROTULOS.length];
     const overlay = document.createElement('div');
     overlay.className = 'lg-overlay ar-overlay rotulos-overlay';
     overlay.innerHTML = `<div class="lg-card ar-modal" role="dialog" aria-modal="true" aria-labelledby="rot-tit">
         <div class="modal-header"><h2 id="rot-tit">Rótulos</h2><button class="btn-fechar" type="button" id="rot-fechar" aria-label="Fechar">×</button></div>
-        <p class="ar-intro">Crie, renomeie, reordene e escolha a cor dos rótulos. Ao ordenar a tabela por rótulo, ela seguirá esta ordem; reordene as colunas do Kanban diretamente no quadro. Renomear atualiza os itens; ao excluir um rótulo em uso, os itens passam para o primeiro rótulo da lista.</p>
+        <p class="ar-intro">Crie, renomeie, reordene e escolha a cor dos rótulos. A ordem das setas altera apenas a visualização atual; no Kanban, também é possível arrastar as colunas. Renomear atualiza os itens; ao excluir um rótulo em uso, os itens passam para o primeiro rótulo da tabela.</p>
         <ul class="ar-lista" id="rot-lista"></ul>
         <div class="ar-nova">
             <button type="button" class="ar-cor" id="rot-nova-cor" aria-label="Cor do novo rótulo"></button>
@@ -355,22 +356,32 @@ function abrirGerenciadorRotulos() {
         const ativos=rascunho.filter(r=>!r.removida).map(r=>({...r,nome:normalizar(r.nome)}));
         const nomes=ativos.map(r=>r.nome.toLocaleLowerCase('pt-BR'));
         if (ativos.some(r=>!r.nome) || new Set(nomes).size!==nomes.length) { q('#rot-msg').textContent='Use nomes preenchidos e sem duplicidade.'; return; }
-        const primeiro=ativos[0].nome;
-        rascunho.forEach(r=>{ if(!r.orig)return; db.forEach(item=>{ if((item.rotulo||opcoesRotulos[0]?.nome)===r.orig) item.rotulo=r.removida?primeiro:(ativos.find(a=>a.orig===r.orig)?.nome||primeiro); }); });
-        opcoesRotulos=ativos.map(r=>({nome:r.nome,cor:r.cor}));
-        const colunasKanban = [];
-        const adicionarColuna = nome => {
-            if (ativos.some(r => r.nome === nome) && !colunasKanban.includes(nome)) colunasKanban.push(nome);
+        const mapearOrdem = ordem => {
+            const nomes = [];
+            const adicionar = nome => {
+                if (ativos.some(r => r.nome === nome) && !nomes.includes(nome)) nomes.push(nome);
+            };
+            ordem.forEach(nome => {
+                const rotulo = ativos.find(r => r.orig === nome);
+                if (rotulo) adicionar(rotulo.nome);
+            });
+            ativos.forEach(r => adicionar(r.nome));
+            return nomes;
         };
-        const ordemKanbanAtual = Array.isArray(preferenciasUsuario.kanbanColunas)
-            ? preferenciasUsuario.kanbanColunas
-            : opcoesRotulos.map(r => r.nome);
-        ordemKanbanAtual.forEach(nome => {
-            const rotulo = ativos.find(r => r.orig === nome);
-            if (rotulo) adicionarColuna(rotulo.nome);
+        const ordemTabela = mapearOrdem(opcoesRotulos.map(r => r.nome));
+        const ordemKanban = mapearOrdem(ordemColunas());
+        if (visaoAtual === 'tabela') {
+            ordemTabela.splice(0, ordemTabela.length, ...ativos.map(r => r.nome));
+        } else {
+            ordemKanban.splice(0, ordemKanban.length, ...ativos.map(r => r.nome));
+        }
+        const primeiro=ordemTabela[0] || ativos[0].nome;
+        rascunho.forEach(r=>{ if(!r.orig)return; db.forEach(item=>{ if((item.rotulo||opcoesRotulos[0]?.nome)===r.orig) item.rotulo=r.removida?primeiro:(ativos.find(a=>a.orig===r.orig)?.nome||primeiro); }); });
+        opcoesRotulos = ordemTabela.map(nome => {
+            const rotulo = ativos.find(r => r.nome === nome);
+            return { nome: rotulo.nome, cor: rotulo.cor };
         });
-        ativos.forEach(r => adicionarColuna(r.nome));
-        preferenciasUsuario.kanbanColunas = colunasKanban;
+        preferenciasUsuario.kanbanColunas = ordemKanban;
         salvarBancoDeDados(db); salvarOpcoesGlobais();
         inicioRotulosKanban=Math.min(inicioRotulosKanban,Math.max(0,opcoesRotulos.length-ROTULOS_POR_TELA));
         salvarInicioRotulosKanban();

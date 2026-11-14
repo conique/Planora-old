@@ -3,7 +3,7 @@
     const scripts = [
         "js/features/projects/project-state-and-table.js?v=20261114-nc3",
         "js/features/projects/project-tags.js",
-        "js/features/projects/project-kanban-and-drag.js?v=20261114-nc4",
+        "js/features/projects/project-kanban-and-drag.js?v=20261114-nc5",
         "js/features/projects/project-folders-and-init.js"
     ];
     function carregarSequencialmente(indice = 0) {
