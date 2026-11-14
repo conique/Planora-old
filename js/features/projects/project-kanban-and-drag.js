@@ -295,7 +295,7 @@ function abrirGerenciadorRotulos() {
     overlay.className = 'lg-overlay ar-overlay rotulos-overlay';
     overlay.innerHTML = `<div class="lg-card ar-modal" role="dialog" aria-modal="true" aria-labelledby="rot-tit">
         <div class="modal-header"><h2 id="rot-tit">Rótulos</h2><button class="btn-fechar" type="button" id="rot-fechar" aria-label="Fechar">×</button></div>
-        <p class="ar-intro">Crie, renomeie, reordene e escolha a cor dos rótulos deste workspace. Renomear atualiza os itens; ao excluir um rótulo em uso, os itens passam para o primeiro rótulo da lista.</p>
+        <p class="ar-intro">Crie, renomeie, reordene e escolha a cor dos rótulos. Ao ordenar a tabela por rótulo, ela seguirá esta ordem; reordene as colunas do Kanban diretamente no quadro. Renomear atualiza os itens; ao excluir um rótulo em uso, os itens passam para o primeiro rótulo da lista.</p>
         <ul class="ar-lista" id="rot-lista"></ul>
         <div class="ar-nova">
             <button type="button" class="ar-cor" id="rot-nova-cor" aria-label="Cor do novo rótulo"></button>
@@ -358,7 +358,19 @@ function abrirGerenciadorRotulos() {
         const primeiro=ativos[0].nome;
         rascunho.forEach(r=>{ if(!r.orig)return; db.forEach(item=>{ if((item.rotulo||opcoesRotulos[0]?.nome)===r.orig) item.rotulo=r.removida?primeiro:(ativos.find(a=>a.orig===r.orig)?.nome||primeiro); }); });
         opcoesRotulos=ativos.map(r=>({nome:r.nome,cor:r.cor}));
-        preferenciasUsuario.kanbanColunas=opcoesRotulos.map(r=>r.nome);
+        const colunasKanban = [];
+        const adicionarColuna = nome => {
+            if (ativos.some(r => r.nome === nome) && !colunasKanban.includes(nome)) colunasKanban.push(nome);
+        };
+        const ordemKanbanAtual = Array.isArray(preferenciasUsuario.kanbanColunas)
+            ? preferenciasUsuario.kanbanColunas
+            : opcoesRotulos.map(r => r.nome);
+        ordemKanbanAtual.forEach(nome => {
+            const rotulo = ativos.find(r => r.orig === nome);
+            if (rotulo) adicionarColuna(rotulo.nome);
+        });
+        ativos.forEach(r => adicionarColuna(r.nome));
+        preferenciasUsuario.kanbanColunas = colunasKanban;
         salvarBancoDeDados(db); salvarOpcoesGlobais();
         inicioRotulosKanban=Math.min(inicioRotulosKanban,Math.max(0,opcoesRotulos.length-ROTULOS_POR_TELA));
         salvarInicioRotulosKanban();

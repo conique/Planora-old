@@ -75,10 +75,6 @@ ordemRotulos.forEach(nome => {
         opcoesRotulos.push({ nome, cor: CORES_PADRAO_ROTULO[nome] });
     }
 });
-opcoesRotulos.sort((a, b) => {
-    const pa = ordemRotulos.indexOf(a.nome), pb = ordemRotulos.indexOf(b.nome);
-    return (pa === -1 ? 99 : pa) - (pb === -1 ? 99 : pb);
-});
 const rotuloEsperando = opcoesRotulos.find(r => r.nome === 'Esperando');
 if (rotuloEsperando && rotuloEsperando.cor !== '#a855f7') {
     rotuloEsperando.cor = '#a855f7';
@@ -106,14 +102,28 @@ function renderizarOpcoesAreaNovaPagina() {
 
 function salvarOpcoesGlobais() {
     preferenciasUsuario.rotulos = opcoesRotulos.map(r => ({ nome: r.nome, cor: r.cor }));
-    salvarPreferenciasBanco({ ...lerPreferenciasBanco(), rotulos: preferenciasUsuario.rotulos });
-
+    const preferencias = { ...lerPreferenciasBanco(), rotulos: preferenciasUsuario.rotulos };
+    if (Array.isArray(preferenciasUsuario.kanbanColunas)) {
+        preferencias.kanbanColunas = preferenciasUsuario.kanbanColunas;
+    }
+    salvarPreferenciasBanco(preferencias);
 }
 
 
-if (!Array.isArray(preferenciasUsuario.rotulos) || !preferenciasUsuario.rotulos.length) {
+const inicializarRotulos = !Array.isArray(preferenciasUsuario.rotulos) || !preferenciasUsuario.rotulos.length;
+const inicializarColunasKanban = !Array.isArray(preferenciasUsuario.kanbanColunas) || !preferenciasUsuario.kanbanColunas.length;
+if (inicializarRotulos) {
     preferenciasUsuario.rotulos = opcoesRotulos.map(r => ({ nome: r.nome, cor: r.cor }));
-    salvarPreferenciasBanco({ ...lerPreferenciasBanco(), rotulos: preferenciasUsuario.rotulos, kanbanColunas: opcoesRotulos.map(r => r.nome) });
+}
+if (inicializarColunasKanban) {
+    preferenciasUsuario.kanbanColunas = opcoesRotulos.map(r => r.nome);
+}
+if (inicializarRotulos || inicializarColunasKanban) {
+    salvarPreferenciasBanco({
+        ...lerPreferenciasBanco(),
+        rotulos: preferenciasUsuario.rotulos,
+        kanbanColunas: preferenciasUsuario.kanbanColunas
+    });
 }
 
 const MAPA_CORES={blue:'#0ea5e9',green:'#10b981',red:'#dc2626',gray:'#4b5563',purple:'#a855f7'};
