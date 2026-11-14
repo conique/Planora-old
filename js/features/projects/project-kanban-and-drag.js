@@ -374,7 +374,7 @@ function abrirGerenciadorRotulos() {
         salvarBancoDeDados(db); salvarOpcoesGlobais();
         inicioRotulosKanban=Math.min(inicioRotulosKanban,Math.max(0,opcoesRotulos.length-ROTULOS_POR_TELA));
         salvarInicioRotulosKanban();
-        fechar(); aplicarVisao();
+        fechar(); renderizarTabela();
     };
     q('#rot-fechar').onclick=fechar; q('#rot-cancelar').onclick=fechar;
     overlay.addEventListener('click',e=>{if(e.target===overlay)fechar();});
