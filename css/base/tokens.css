@@ -11,6 +11,7 @@
   /* marca e estados */
   --accent:#3b9cff; --accent-btn:#00c875; --accent-btn-h:#00b368; --on-accent:#08261a;
   --verde-texto:#34d399; --link:#5eb0ff; --perigo:#ef4444; --ok:#22c55e; --aviso:#f59e0b;
+  --controle-ui-bg:#292f37; --controle-ui-hover:#343c46; --controle-ui-borda:#596473; --controle-ui-texto:#f4f6f8; --controle-ui-sombra:0 2px 8px rgba(0,0,0,.28);
   --marca-grad:linear-gradient(135deg,#34d399,#22d3ee 55%,#3b82f6);
   /* fundo da aplicaÃ§Ã£o (brilhos e malha) */
   --fundo-luz-verde:rgba(0,200,117,.12); --fundo-luz-azul:rgba(59,130,246,.12); --fundo-malha:rgba(255,255,255,.035);
@@ -31,6 +32,7 @@ html[data-tema="claro"]{
   --borda:#e1e6ee; --borda-forte:#cfd7e3; --borda-suave:rgba(15,23,42,.08);
   --texto:#1c2430; --texto-2:#5b6676; --texto-3:#8a94a3; --titulo:#0d1520;
   --accent:#0b7bd6; --verde-texto:#047857; --link:#0b6ec0; --perigo:#dc2626; --ok:#16a34a; --aviso:#d97706;
+  --controle-ui-bg:#ffffff; --controle-ui-hover:#e7edf5; --controle-ui-borda:#8b98aa; --controle-ui-texto:#1c2430; --controle-ui-sombra:0 2px 8px rgba(15,23,42,.16);
   --fundo-luz-verde:rgba(5,150,105,.09); --fundo-luz-azul:rgba(2,132,199,.09); --fundo-malha:rgba(15,23,42,.045);
   --sombra-m:0 12px 30px -16px rgba(15,23,42,.22); --sombra-l:0 30px 60px -30px rgba(15,23,42,.35);
   color-scheme:light;

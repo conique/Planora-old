@@ -34,6 +34,9 @@
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
                 <input id="topo-busca" type="search" placeholder="Buscar páginas..." autocomplete="off">
             </label>
+            ${topo.dataset.filtros === 'true' ? `<button class="btn-filtros-topo" id="topo-filtros" type="button" title="Abrir filtros" aria-label="Abrir filtros" aria-expanded="false" aria-controls="barra-filtros">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16l-6.5 7.5v5L10 19v-6.5L4 5z"></path></svg>
+            </button>` : ''}
             <button class="btn-novo" id="topo-novo" type="button">
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
                 <span>Nova Página</span>
@@ -98,6 +101,7 @@
         if (devolverFoco) btnPainel.focus();
     }
     function abrirPainelLateral() {
+        desenharWorkspaces();
         painelLateral.classList.add('aberto');
         painelLateral.setAttribute('aria-hidden', 'false');
         painelLateral.inert = false;
@@ -164,6 +168,10 @@
 
     const busca = document.getElementById('topo-busca'), novo = document.getElementById('topo-novo');
     const acao = document.getElementById('topo-acao');
+    const btnFiltros = document.getElementById('topo-filtros');
+    if (btnFiltros) btnFiltros.addEventListener('click', () => {
+        if (typeof window.aoAlternarFiltros === 'function') window.aoAlternarFiltros();
+    });
     if (acao) acao.addEventListener('click', () => {
         if (typeof window.aoNovoRegistro === 'function') window.aoNovoRegistro();
     });

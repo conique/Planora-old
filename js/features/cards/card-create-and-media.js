@@ -14,11 +14,6 @@
                     'inputLegendaCard'
                 ).value;
 
-            const tipo =
-                document.getElementById(
-                    'inputTipoCard'
-                ).value;
-
             const botao =
                 document.getElementById(
                     'btnEnviarCard'
@@ -76,8 +71,6 @@
                     }`;
 
                 const novoCard = {
-
-                    tipo: tipo,
 
                     titulo: titulo,
 
@@ -142,11 +135,10 @@
            LIMPAR FORMULÁRIO
         ========================================================= */
 
-        function limparFormularioNovoCard() {
+        function limparFormularioNovoCard(focar = true) {
 
-            document.getElementById(
-                'inputTituloCard'
-            ).value = '';
+            const titulo = document.getElementById('inputTituloCard');
+            titulo.value = '';
 
             document.getElementById(
                 'inputLegendaCard'
@@ -154,10 +146,13 @@
 
             removerMidiaNovo();
 
-            document.getElementById(
-                'inputTituloCard'
-            ).focus();
+            if (focar) titulo.focus();
         }
+
+        document.getElementById('btnCancelarCard').addEventListener('click', () => {
+            limparFormularioNovoCard(false);
+            abrirFecharFormulario(false);
+        });
 
 
         /* =========================================================

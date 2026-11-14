@@ -19,9 +19,17 @@ function enviarAgora() {
     fila = fila.then(enviar);
 }
 
+let saidaComPendenciasConfirmada = false;
+function permitirNavegacaoComPendencias() {
+    saidaComPendenciasConfirmada = true;
+}
+
 /* Avisa antes de fechar/recarregar se ainda há alteração não enviada à nuvem. */
 window.addEventListener('beforeunload', e => {
-    if (nuvemAtiva() && localStorage.getItem(chavePend()) === '1') { e.preventDefault(); e.returnValue = ''; }
+    if (!saidaComPendenciasConfirmada && nuvemAtiva() && localStorage.getItem(chavePend()) === '1') {
+        e.preventDefault();
+        e.returnValue = '';
+    }
 });
 
 async function enviar() {

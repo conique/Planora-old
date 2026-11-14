@@ -112,10 +112,7 @@
             }
             const acaoHeader = document.getElementById('topo-acao');
             if (acaoHeader) {
-                acaoHeader.classList.toggle('ativo', abrir);
                 acaoHeader.setAttribute('aria-expanded', String(abrir));
-                const texto = acaoHeader.querySelector('span');
-                if (texto) texto.textContent = abrir ? 'Fechar card' : 'Criar card';
             }
         }
 
@@ -135,10 +132,7 @@
 
             const acaoHeader = document.getElementById('topo-acao');
             if (acaoHeader) {
-                acaoHeader.classList.toggle('ativo', formularioAberto);
                 acaoHeader.setAttribute('aria-expanded', String(formularioAberto));
-                const texto = acaoHeader.querySelector('span');
-                if (texto) texto.textContent = formularioAberto ? 'Fechar card' : 'Criar card';
             }
         }
 
@@ -247,7 +241,7 @@
             salvarEdicaoDados();
         });
 
-        /* ---------- Tags do projeto: mesmo seletor do menu (escolher existente, criar com cor, remover) ---------- */
+        /* ---------- Tags do projeto e dos cards: seletor compartilhado ---------- */
         const CORES_TAG = [
             '#3b82f6', '#22c55e', '#ef4444', '#f97316', '#eab308', '#a855f7',
             '#ec4899', '#14b8a6', '#6366f1', '#92400e', '#6b7280'
@@ -256,10 +250,15 @@
 
         function tagsExistentes() {
             const mapa = new Map();
-            db.forEach(p => (p.tags || []).forEach(tg => {
+            const adicionarLista = tags => (tags || []).forEach(tg => {
+                if (!tg || !tg.nome) return;
                 const k = tg.nome.toLowerCase() + '|' + tg.cor;
                 if (!mapa.has(k)) mapa.set(k, { nome: tg.nome, cor: tg.cor });
-            }));
+            });
+            db.forEach(p => {
+                adicionarLista(p.tags);
+                (p.cards || []).forEach(card => adicionarLista(card.tags));
+            });
             return [...mapa.values()].sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
         }
 
@@ -267,14 +266,15 @@
             if (popTags) { popTags.el.remove(); popTags = null; }
         }
 
-        function abrirPopTags(event) {
+        function abrirPopTags(event, alvo, aoAtualizar, rotulo, salvar = true) {
             event.stopPropagation();
-            if (popTags) return fecharPopTags();
+            if (popTags && popTags.botao === event.currentTarget) return fecharPopTags();
+            if (popTags) fecharPopTags();
             const el = document.createElement('div');
             el.className = 'pop-tags';
             el.setAttribute('role', 'dialog');
-            el.setAttribute('aria-label', 'Tags do projeto');
-            popTags = { el, cor: CORES_TAG[0], livres: [] };
+            el.setAttribute('aria-label', rotulo);
+            popTags = { el, cor: CORES_TAG[0], livres: [], alvo, aoAtualizar, salvar, botao: event.currentTarget };
             document.body.appendChild(el);
 
             el.addEventListener('click', e => {
@@ -300,7 +300,7 @@
         }
 
         function desenharPopTags() {
-            const atuais = projetoAtual.tags || [];
+            const atuais = popTags.alvo.tags || [];
             const livres = tagsExistentes().filter(tg => !atuais.some(a => a.nome.toLowerCase() === tg.nome.toLowerCase()));
             popTags.livres = livres;
             const estilo = c => `background:${c.cor};color:${corTextoTag(c.cor)}`;
@@ -329,7 +329,7 @@
         }
 
         function posicionarPopTags() {
-            const btn = document.getElementById('btn-tag-mais');
+            const btn = popTags && popTags.botao;
             if (!btn || !popTags) return;
             const r = btn.getBoundingClientRect(), el = popTags.el;
             el.style.maxHeight = (window.innerHeight - 16) + 'px';
@@ -342,19 +342,22 @@
         }
 
         function atualizarAposTag() {
-            db[projetoId] = projetoAtual;
-            salvarBancoDeDados(db);
-            if (typeof enviarAgora === 'function') enviarAgora();
-            document.getElementById('header-tags').innerHTML = (projetoAtual.tags || []).map(htmlTagBolha).join('');
+            if (popTags.salvar) {
+                db[projetoId] = projetoAtual;
+                salvarBancoDeDados(db);
+                if (typeof enviarAgora === 'function') enviarAgora();
+            }
+            const botao = popTags.aoAtualizar();
+            if (botao) popTags.botao = botao;
             desenharPopTags();
             posicionarPopTags();
         }
 
         function adicionarTag(tag) {
             if (!tag) return;
-            projetoAtual.tags = projetoAtual.tags || [];
-            if (projetoAtual.tags.some(x => x.nome.toLowerCase() === tag.nome.toLowerCase())) return;
-            projetoAtual.tags.push({ nome: tag.nome, cor: tag.cor });
+            const atuais = popTags.alvo.tags || (popTags.alvo.tags = []);
+            if (atuais.some(x => x.nome.toLowerCase() === tag.nome.toLowerCase())) return;
+            atuais.push({ nome: tag.nome, cor: tag.cor });
             atualizarAposTag();
         }
 
@@ -368,13 +371,25 @@
         }
 
         function removerTag(i) {
-            (projetoAtual.tags || []).splice(i, 1);
+            (popTags.alvo.tags || []).splice(i, 1);
             atualizarAposTag();
         }
 
-        document.getElementById('btn-tag-mais').addEventListener('click', abrirPopTags);
+        function renderizarTagsHeader() {
+            const headerTags = document.getElementById('header-tags');
+            const botaoTagMais = document.getElementById('btn-tag-mais');
+            headerTags.innerHTML = (projetoAtual.tags || []).map(htmlTagBolha).join('');
+            headerTags.appendChild(botaoTagMais);
+        }
+
+        document.getElementById('btn-tag-mais').addEventListener('click', event => {
+            abrirPopTags(event, projetoAtual, () => {
+                renderizarTagsHeader();
+                return document.getElementById('btn-tag-mais');
+            }, 'Tags do projeto');
+        });
         document.addEventListener('pointerdown', e => {
-            if (popTags && !popTags.el.contains(e.target) && !e.target.closest('#btn-tag-mais')) fecharPopTags();
+            if (popTags && !popTags.el.contains(e.target) && !e.target.closest('.btn-tag-mais')) fecharPopTags();
         }, true);
         document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharPopTags(); });
         window.addEventListener('resize', () => { if (popTags) posicionarPopTags(); });
@@ -395,9 +410,7 @@
 
             statusHeader.innerText = rotuloHeader;
 
-            document.getElementById('header-tags').innerHTML =
-
-                (projetoAtual.tags || []).map(htmlTagBolha).join('');
+            renderizarTagsHeader();
 
             const nomeArea = projetoAtual.area || Planora_Areas.padrao();
             const elArea = document.getElementById('header-area');
@@ -508,9 +521,6 @@
                                         aria-label="Alterar status do card. Status atual: ${card.semaforo || 'verde'}"
                                         type="button"
                                     ></button>
-                                    <span class="card-tipo-tag">
-                                        ${card.tipo || 'Atualização'}
-                                    </span>
                                     <h3>${card.titulo || ''}</h3>
                                 </div>
 
