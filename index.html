@@ -7,13 +7,13 @@
     <title>Planora — Projetos</title>
     <link rel="icon" type="image/png" href="assets/favicon.png">
     <script>try{if(localStorage.getItem('Planora_tema')==='claro'){document.documentElement.dataset.tema='claro';document.querySelector('meta[name="theme-color"]').content='#f3f5f9'}}catch(e){}</script>
-    <link rel="stylesheet" href="css/main.css?v=20261112-3">
+    <link rel="stylesheet" href="css/main.css?v=20261114-3">
 </head>
 
 <body>
 
-<header class="topo" id="topo" data-atual=""></header>
-<script src="js/layout/header.js?v=20261112-3"></script>
+<header class="topo" id="topo" data-atual="" data-filtros="true"></header>
+<script src="js/layout/header.js?v=20261114-3"></script>
 
 
 <div id="estado-vazio" style="display:none;">
@@ -35,11 +35,18 @@
 
 </div>
 
+<div class="filtros-tabela" id="barra-filtros" role="group" aria-label="Filtros" hidden>
+    <div class="filtros-tabela-intro">
+        <button type="button" class="btn-limpar-filtros" onclick="limparFiltrosTabela()">Limpar filtros</button>
+    </div>
+    <div class="filtro-tabela-campo filtro-tabela-grupo" id="filtro-tag"></div>
+    <div class="filtro-tabela-campo filtro-tabela-grupo" id="filtro-rotulo"></div>
+    <div class="filtro-tabela-campo filtro-tabela-grupo" id="filtro-area"></div>
+</div>
 
 <div class="kanban" id="kanban" hidden></div>
 
 <div id="conteudo-tabela" style="display:none;">
-
     <div class="barra-ordem" id="barra-ordem"></div>
 
     <div class="tabela-rolagem">
@@ -168,17 +175,18 @@
 </footer>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/config/supabase.config.js"></script>
-    <script src="js/core/storage.js"></script>
-    <script src="js/features/areas/areas.js"></script>
-    <script src="js/core/history.js"></script>
-    <script src="js/core/sync.js"></script>
-    <script src="js/features/auth/auth.js"></script>
-    <script src="js/features/workspaces/workspaces.js"></script>
-    <script src="js/features/workspaces/workspaces-ui.js"></script>
-    <script src="js/features/media/media.js"></script>
+    <script src="js/core/storage.js?v=20261114-3"></script>
+    <script src="js/features/areas/areas.js?v=20261114-1"></script>
+    <script src="js/core/history.js?v=20261114-3"></script>
+    <script src="js/core/sync.js?v=20261114-5"></script>
+    <script src="js/features/auth/auth.js?v=20261114-4"></script>
+    <script src="js/features/workspaces/workspaces.js?v=20261114-7"></script>
+    <script src="js/features/workspaces/workspaces-ui.js?v=20261114-3"></script>
+    <script src="js/features/media/media.js?v=20261114-1"></script>
     <script src="js/features/tags/tag-utils.js"></script>
-    <script src="js/core/bootstrap.js"></script>
-<script src="js/features/projects/projects.loader.js?v=20261112-3"></script>
+    <script src="js/core/bootstrap.js?v=20261114-4"></script>
+<script src="js/features/projects/projects.loader.js?v=20261114-1"></script>
+<script src="js/layout/scrollbar.js?v=20261112-4"></script>
 
 
 </body>

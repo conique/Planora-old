@@ -3,6 +3,7 @@
         ========================================================= */
 
         async function ativarEdicaoCard(index) {
+            if (workspaceAtual && workspaceAtual.role === 'viewer') return;
 
             const btnOpcoes =
                 document.getElementById(
@@ -147,17 +148,6 @@
             containerConteudo.removeAttribute('title');
 
             containerConteudo.innerHTML = `
-
-                <select
-                    id="edit-tipo-${index}"
-                    class="seletor-tipo"
-                    style="margin-bottom: 10px;"
-                >
-                    <option value="Atualização" ${card.tipo === 'Atualização' ? 'selected' : ''}>Atualização</option>
-                    <option value="Tarefa" ${card.tipo === 'Tarefa' ? 'selected' : ''}>Tarefa</option>
-                    <option value="Reunião" ${card.tipo === 'Reunião' ? 'selected' : ''}>Reunião</option>
-                    <option value="Decisão" ${card.tipo === 'Decisão' ? 'selected' : ''}>Decisão</option>
-                </select>
 
                 <input
                     type="text"

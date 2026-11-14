@@ -1,6 +1,8 @@
 /* ---------- 2. Base e fundo da aplicaÃ§Ã£o ---------- */
 *{box-sizing:border-box}
 html{min-height:100%;background:var(--bg-pagina)}
+html{scrollbar-width:none}
+html::-webkit-scrollbar{display:none}
 body{margin:0;min-height:100vh;color:var(--texto);font-family:var(--font);font-size:14px;line-height:1.5;
   background:transparent;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;overflow-x:clip}
 /* Fundo Ãºnico de todas as telas: brilhos nos cantos e malha (camada fixa atrÃ¡s de tudo). */
@@ -19,6 +21,13 @@ button,input,textarea,select{font-family:inherit}
 ::-webkit-scrollbar{width:10px;height:10px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--borda-forte);border-radius:9999px;border:2px solid transparent;background-clip:content-box}
+.planora-scrollbar{position:fixed;z-index:120;top:4px;right:0;bottom:4px;width:14px;touch-action:none;cursor:pointer}
+.planora-scrollbar[hidden]{display:none}
+.planora-scrollbar-thumb{position:absolute;top:0;right:2px;width:8px;min-height:32px;border-radius:var(--raio-pilula);background:var(--borda-forte);opacity:.72;transition:opacity .15s}
+.planora-scrollbar:hover .planora-scrollbar-thumb,.planora-scrollbar:focus-visible .planora-scrollbar-thumb,.planora-scrollbar.arrastando .planora-scrollbar-thumb{opacity:1}
+.planora-scrollbar:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.planora-scrollbar.arrastando{cursor:grabbing;user-select:none}
+@media (pointer:coarse){.planora-scrollbar{display:none}}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 /* conteÃºdo da pÃ¡gina: coluna central; os elementos flutuantes ficam de fora desta regra */
 body>:not(header):not(.footer-Planora):not(script):not(.modal-overlay):not(.lg-overlay):not(.pop-tags):not(.ghost-arrasto):not(.caixa-selecao):not(.painel-lateral):not(.fundo-painel-lateral):not(.menu-tabela-flutuante):not(.menu-card-flutuante){

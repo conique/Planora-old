@@ -53,9 +53,10 @@
   tbody tr.em-edicao td:nth-child(5){order:4;flex:1 1 100%;width:auto;text-align:right}
   .input-inline-tabela{max-width:none}
   .barra-ordem{padding:10px 14px}
-  .kb-col{flex:0 0 82vw;min-width:0}
-  .kb-board{--folga:12px}
-  .kb-voltar{margin:0 12px 14px}
+  body>#kanban{width:calc(100% - 24px)!important;max-width:calc(1380px - 24px)!important}
+  .kb-col{flex-basis:min(82vw,250px);width:min(82vw,250px)}
+  .kb-board{padding-right:12px;padding-left:12px}
+  .kb-voltar{margin-bottom:12px}
   /* cards */
   .timeline-container{padding-left:40px!important}
   .timeline-container::before{left:16px}
@@ -97,14 +98,8 @@
   button:active:not(:disabled){transform:none}
   .ws-item:hover{transform:none}
 }
-/* NavegaÃ§Ã£o e gerenciamento de rÃ³tulos do Kanban */
-.kb-navegacao{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin:0 max(24px,calc((100% - 1332px)/2)) 12px}
-.kb-seta{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid var(--borda);border-radius:50%;background:var(--surface-2);color:var(--titulo);font-size:20px;cursor:pointer}
-.kb-seta:hover{background:var(--surface-3);border-color:var(--accent-btn)}
-.kb-seta[hidden]{display:none}
-.kb-paginacao{font-size:12px;color:var(--texto-2);min-width:66px;text-align:center}
+/* Navegação e gerenciamento de rótulos do Kanban */
 .rotulo-nome-estatico{display:flex;align-items:center;background:transparent}
-@media(max-width:700px){.kb-navegacao{margin:0 12px 10px;justify-content:space-between}.kb-paginacao{flex:1}}
 
 .topo-mais{position:relative;display:inline-flex}
 .btn-mais-opcoes{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;padding:0;border:1px solid var(--borda);border-radius:var(--raio-m);background:var(--surface-2);color:var(--texto-2);font-size:22px;line-height:1;cursor:pointer}
@@ -115,137 +110,31 @@
 .menu-mais-opcoes button:hover,.menu-mais-opcoes button:focus-visible{background:var(--surface-3);color:var(--titulo)}
 @media(max-width:700px){.topo-mais{margin-left:auto}.btn-mais-opcoes{width:40px;height:36px}}
 
-/* NavegaÃ§Ã£o moderna das janelas de rÃ³tulos */
-.kb-navegacao{justify-content:center;gap:12px;padding:4px 0}
-.kb-seta{width:40px;height:40px;border:1px solid color-mix(in srgb,var(--texto-3) 28%,transparent);border-radius:50%;background:linear-gradient(180deg,color-mix(in srgb,var(--surface-3) 88%,#fff 4%),var(--surface-2));color:var(--texto);font-size:0;box-shadow:0 5px 14px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.05);transition:transform .16s ease,border-color .16s ease,background .16s ease,box-shadow .16s ease}
-.kb-seta::before{content:'';width:8px;height:8px;border-top:1.8px solid currentColor;border-right:1.8px solid currentColor;transform:rotate(45deg) translate(-1px,1px)}
-.kb-seta:first-child::before{transform:rotate(-135deg) translate(-1px,1px)}
-.kb-seta:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--accent-btn) 55%,transparent);background:color-mix(in srgb,var(--accent-btn) 12%,var(--surface-2));box-shadow:0 8px 18px rgba(0,0,0,.24),0 0 0 3px color-mix(in srgb,var(--accent-btn) 10%,transparent)}
-.kb-seta:active{transform:translateY(0) scale(.96)}
-.kb-paginacao{min-width:78px;color:var(--texto-2);font-size:12px;font-weight:600;letter-spacing:.01em}
-
-/* NavegaÃ§Ã£o do Kanban no mesmo formato da linha "Voltar para Workspace" */
-.kb-navegacao{
-  display:grid;
-  grid-template-columns:44px minmax(90px,1fr) 44px;
-  align-items:center;
-  width:auto;
-  min-height:40px;
-  gap:8px;
-  margin:0 max(24px,calc((100% - 1332px)/2)) 14px;
-  padding:4px 8px;
-  border:1px dashed var(--borda-forte);
-  border-radius:var(--raio-m);
-  background:transparent;
-}
-.kb-seta{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:36px;
-  height:30px;
-  padding:0;
-  border:0;
-  border-radius:7px;
-  background:transparent;
-  color:var(--texto-2);
-  font:600 22px/1 Arial,sans-serif;
-  box-shadow:none;
-  cursor:pointer;
-  transition:background .15s ease,color .15s ease,opacity .15s ease;
-}
-.kb-seta::before{content:none!important}
-.kb-seta-anterior{justify-self:start}
-.kb-seta-proxima{justify-self:end}
-.kb-seta:hover:not(:disabled){background:var(--surface-2);color:var(--texto);transform:none;box-shadow:none;border-color:transparent}
-.kb-seta:active:not(:disabled){background:var(--surface-3);transform:none}
-.kb-seta:disabled{opacity:.28;cursor:default}
-.kb-paginacao{justify-self:center;min-width:0;text-align:center;color:var(--texto-2);font-size:12px;font-weight:600;letter-spacing:.01em}
+/* Paginação do Kanban no padrão dos demais botões de ação */
+.kb-navegacao{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin:0 0 14px;padding:0}
+.kb-seta{display:inline-flex;align-items:center;justify-content:center;flex:0 0 36px;width:36px;height:36px;padding:0;border:1px solid var(--borda);border-radius:var(--raio-m);background:var(--surface-2);color:var(--texto-2);font:inherit;font-size:20px;line-height:1;cursor:pointer;transition:background .15s ease,border-color .15s ease,color .15s ease}
+.kb-seta:hover:not(:disabled){background:var(--surface-3);border-color:var(--borda-forte);color:var(--titulo)}
+.kb-seta:disabled{opacity:.38;cursor:default}
+.kb-seta[hidden]{display:none}
+.kb-paginacao{min-width:78px;color:var(--texto-2);font-size:12px;font-weight:600;text-align:center;letter-spacing:.01em}
 @media(max-width:700px){
-  .kb-navegacao{grid-template-columns:40px 1fr 40px;margin:0 12px 10px;padding:4px 6px}
-  .kb-seta{width:34px;height:30px}
-}
-
-/* CorreÃ§Ã£o final: mesma caixa de Voltar para Workspace e conteÃºdo nas trÃªs posiÃ§Ãµes */
-#kanban .kb-navegacao{
-  position:relative!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  box-sizing:border-box!important;
-  width:auto!important;
-  min-width:0!important;
-  min-height:0!important;
-  height:auto!important;
-  margin:0 max(24px,calc((100% - 1332px)/2)) 14px!important;
-  padding:8px 54px!important;
-  gap:0!important;
-  border:1px dashed var(--borda-forte)!important;
-  border-radius:var(--raio-m)!important;
-  background:transparent!important;
-  font-size:13px!important;
-  line-height:18px!important;
-}
-#kanban .kb-navegacao .kb-seta{
-  position:absolute!important;
-  top:50%!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  box-sizing:border-box!important;
-  width:36px!important;
-  height:28px!important;
-  min-width:36px!important;
-  margin:0!important;
-  padding:0!important;
-  border:0!important;
-  border-radius:7px!important;
-  background:transparent!important;
-  color:var(--texto-2)!important;
-  font-family:Arial,sans-serif!important;
-  font-size:24px!important;
-  font-weight:400!important;
-  line-height:1!important;
-  box-shadow:none!important;
-  transform:translateY(-50%)!important;
-}
-#kanban .kb-navegacao .kb-seta::before{content:none!important}
-#kanban .kb-navegacao .kb-seta-anterior{left:8px!important;right:auto!important}
-#kanban .kb-navegacao .kb-seta-proxima{right:8px!important;left:auto!important}
-#kanban .kb-navegacao .kb-seta:hover:not(:disabled){background:var(--surface-2)!important;color:var(--texto)!important;box-shadow:none!important;transform:translateY(-50%)!important}
-#kanban .kb-navegacao .kb-seta:active:not(:disabled){background:var(--surface-3)!important;transform:translateY(-50%)!important}
-#kanban .kb-navegacao .kb-seta:disabled{display:flex!important;opacity:.28!important;cursor:default!important}
-#kanban .kb-navegacao .kb-paginacao{
-  display:block!important;
-  width:auto!important;
-  min-width:0!important;
-  margin:0!important;
-  padding:0!important;
-  color:var(--texto-2)!important;
-  font-size:13px!important;
-  font-weight:500!important;
-  line-height:18px!important;
-  text-align:center!important;
-  white-space:nowrap!important;
-}
-@media(max-width:700px){
-  #kanban .kb-navegacao{margin:0 12px 10px!important;padding:8px 50px!important}
-  #kanban .kb-navegacao .kb-seta-anterior{left:6px!important}
-  #kanban .kb-navegacao .kb-seta-proxima{right:6px!important}
+  .kb-navegacao{margin-bottom:10px}
+  .kb-seta{flex-basis:34px;width:34px;height:34px}
 }
 
 
 /* RÃ³tulos acima das Ã¡reas e metadados em bolhas */
 .rot-painel-lista,.ar-painel-lista{display:flex;flex-direction:column;gap:7px;margin:0;padding:0;list-style:none}
 .rot-painel-lista li,.ar-painel-lista li{display:flex;align-items:center;gap:8px;min-width:0;padding:2px 10px;font-size:13px;color:var(--texto)}
-.rot-painel-bolha,.ar-painel-nome{display:inline-flex;align-items:center;min-width:0;max-width:calc(100% - 34px);padding:4px 9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border:1px solid color-mix(in srgb,var(--cor-rotulo,var(--cor-area)) 48%,var(--borda));border-radius:var(--raio-pilula);color:var(--texto);background:color-mix(in srgb,var(--cor-rotulo,var(--cor-area)) 16%,var(--surface-2))}
+.rot-painel-bolha,.ar-painel-nome{display:inline-flex;align-items:center;min-width:0;max-width:calc(100% - 34px);padding:2px 9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border:1px solid color-mix(in srgb,var(--cor-rotulo,var(--cor-area)) 48%,var(--borda));border-radius:var(--raio-pilula);color:var(--texto);background:color-mix(in srgb,var(--cor-rotulo,var(--cor-area)) 16%,var(--surface-2))}
 .ar-painel-lista .ar-ponto{display:none}
 .rot-painel-qtd,.ar-painel-qtd{margin-left:auto;flex:0 0 auto;font-size:12px;color:var(--texto-3)}
 .kb-area,.kb-prazo,.pilula-prazo{display:inline-flex;align-items:center;width:max-content;max-width:100%;padding:3px 9px;border-radius:var(--raio-pilula);font-size:12px;font-weight:600;line-height:1.25;white-space:nowrap}
 .kb-area{margin-left:6px;vertical-align:middle}
-.kb-prazo,.pilula-prazo{color:var(--texto-2);background:var(--surface-2);border:1px solid var(--borda)}
-.kb-prazo.prazo-hoje,.pilula-prazo.prazo-hoje{color:#fbbf24;background:rgba(245,158,11,.14);border-color:rgba(245,158,11,.55)}
-.kb-prazo.prazo-vencido,.pilula-prazo.prazo-vencido{color:#f87171;background:rgba(239,68,68,.14);border-color:rgba(239,68,68,.58)}
+.kb-prazo,.pilula-prazo{--glow:var(--texto-2);border:1px solid color-mix(in srgb,var(--glow) 48%,transparent);
+  background:color-mix(in srgb,var(--glow) 14%,transparent);color:color-mix(in srgb,var(--glow) 35%,var(--titulo))}
+html[data-tema="claro"] .kb-prazo,html[data-tema="claro"] .pilula-prazo{background:color-mix(in srgb,var(--glow) 12%,#fff);
+  border-color:color-mix(in srgb,var(--glow) 45%,#fff);color:color-mix(in srgb,var(--glow) 78%,#111827)}
 
 
 /* =====================================================================
@@ -262,11 +151,11 @@
     right: 0;
 
     display: grid !important;
-    grid-template-columns: 40px 42px minmax(0, 1fr) 68px 42px;
+    grid-template-columns: 40px 42px minmax(0, 1fr) 68px 36px 42px;
     grid-template-rows: 48px 52px;
     grid-template-areas:
-      "menu logo caminho historico tema"
-      "busca busca busca busca novo";
+      "menu logo caminho historico . tema"
+      "busca busca busca busca filtro novo";
 
     align-items: center;
     gap: 8px 6px;
@@ -433,6 +322,12 @@
     height: 16px;
   }
 
+  header.topo:not(:has(.topo-dir.solo)) .btn-filtros-topo {
+    grid-area: filtro;
+    align-self: center;
+    justify-self: center;
+  }
+
   /* BotÃ£o de tema */
   header.topo:not(:has(.topo-dir.solo)) .btn-tema {
     grid-area: tema;
@@ -567,7 +462,10 @@
 /* Pixel e celulares prÃ³ximos de 412px */
 @media (min-width: 390px) and (max-width: 430px) {
   header.topo:not(:has(.topo-dir.solo)) {
-    grid-template-columns: 40px 42px minmax(0, 1fr) 68px 42px;
+    grid-template-columns: 40px 42px minmax(0, 1fr) 68px 36px 42px;
+    grid-template-areas:
+      "menu logo caminho historico . tema"
+      "busca busca busca busca filtro novo";
     gap: 8px 6px;
     padding-right: 10px !important;
     padding-left: 10px !important;
@@ -582,7 +480,10 @@
 /* Smartphones menores */
 @media (max-width: 389px) {
   header.topo:not(:has(.topo-dir.solo)) {
-    grid-template-columns: 38px 40px minmax(0, 1fr) 64px 40px;
+    grid-template-columns: 38px 40px minmax(0, 1fr) 64px 34px 40px;
+    grid-template-areas:
+      "menu logo caminho historico . tema"
+      "busca busca busca busca filtro novo";
     column-gap: 5px;
     padding-right: 8px !important;
     padding-left: 8px !important;
@@ -620,10 +521,10 @@
 /* Menos de 350px: histÃ³rico sai para preservar logo, nome e tema */
 @media (max-width: 349px) {
   header.topo:not(:has(.topo-dir.solo)) {
-    grid-template-columns: 38px 40px minmax(0, 1fr) 40px;
+    grid-template-columns: 38px 40px minmax(0, 1fr) 36px 40px;
     grid-template-areas:
-      "menu logo caminho tema"
-      "busca busca busca novo";
+      "menu logo caminho . tema"
+      "busca busca busca filtro novo";
   }
 
   header.topo:not(:has(.topo-dir.solo)) .controle-historico {
@@ -633,7 +534,7 @@
 
 
 /* ---------- Padronização visual das pílulas ---------- */
-:root{--altura-pilula-ui:30px;--padding-pilula-ui:0 14px;--fonte-pilula-ui:12px}
+:root{--altura-pilula-ui:26px;--altura-bolha-ui:26px;--padding-pilula-ui:0 12px;--fonte-pilula-ui:12px}
 .selo,
 .selo-rotulo,
 .pilula-area,
@@ -645,8 +546,8 @@
   align-items:center;
   justify-content:center;
   box-sizing:border-box;
-  min-height:var(--altura-pilula-ui);
-  height:var(--altura-pilula-ui);
+  min-height:var(--altura-bolha-ui);
+  height:var(--altura-bolha-ui);
   padding:var(--padding-pilula-ui);
   border-radius:999px;
   font-size:var(--fonte-pilula-ui);
@@ -657,8 +558,22 @@
 .tag-bolha{gap:6px;border:1px solid color-mix(in srgb,currentColor 25%,transparent)}
 .tag-bolha.tag-removivel{padding-right:8px}
 .tag-bolha.tag-removivel button{display:grid;place-items:center;width:18px;height:18px;margin:0 -2px 0 2px;padding:0;border:0;border-radius:50%;line-height:1}
+.cabecalho-pagina .selo,
+.cabecalho-pagina .selo-rotulo,
+.cabecalho-pagina .pilula-area,
+.cabecalho-pagina .pilula-prazo,
+.cabecalho-pagina .tag-bolha{height:var(--altura-bolha-ui);min-height:var(--altura-bolha-ui);padding:var(--padding-pilula-ui)}
 /* Botões circulares permanecem circulares, mas usam a mesma altura visual. */
 .btn-adicionar-tag,.btn-tag-adicionar{width:var(--altura-pilula-ui);height:var(--altura-pilula-ui);min-width:var(--altura-pilula-ui);padding:0;border-radius:50%}
+.cabecalho-pagina .cabecalho-meta-grupo{display:inline-flex;align-items:center;gap:12px}
+.cabecalho-pagina .cabecalho-meta-grupo-tags{max-width:100%;min-width:0}
+.cabecalho-pagina .tags-header{align-items:center;max-width:100%}
+.cabecalho-pagina .cabecalho-meta-separador{color:var(--texto-3);font-size:13px;line-height:1;user-select:none}
+.cabecalho-pagina #btn-tag-mais,.cabecalho-pagina .btn-editar-dados{
+  width:max-content;min-width:0;height:var(--altura-bolha-ui);min-height:var(--altura-bolha-ui);padding:var(--padding-pilula-ui);border-radius:var(--raio-pilula);box-shadow:none}
+.btn-tag-mais.pilula-prazo{box-shadow:none}
+.btn-tag-mais.pilula-prazo:hover{background:color-mix(in srgb,var(--glow) 14%,transparent);border-color:color-mix(in srgb,var(--glow) 48%,transparent);color:color-mix(in srgb,var(--glow) 35%,var(--titulo))}
+html[data-tema="claro"] .btn-tag-mais.pilula-prazo:hover{background:color-mix(in srgb,var(--glow) 12%,#fff);border-color:color-mix(in srgb,var(--glow) 45%,#fff);color:color-mix(in srgb,var(--glow) 78%,#111827)}
 
 
 /* Criação de card no header e semáforo dentro do cabeçalho do card */

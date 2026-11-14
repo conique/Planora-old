@@ -68,6 +68,10 @@ async function garantirAreasPadrao() {
     itens.forEach(i => { if (i && AREAS_ANTIGAS.includes(i.area)) i.area = areas[0].nome; });
     localStorage.setItem(chaveDb(), JSON.stringify(itens));
     localStorage.setItem(chavePreferencias(), JSON.stringify({ ...preferencias, areas }));
+    if (workspaceAtual && workspaceAtual.role === 'viewer') {
+        reiniciarHistorico();
+        return true;
+    }
     localStorage.setItem(chavePend(), '1');
     seq++;
     reiniciarHistorico();

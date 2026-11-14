@@ -70,7 +70,13 @@ function sincronizarHistoricoComBanco() {
     persistirHistorico();
     notificarHistorico();
 }
+function atualizarHistoricoSemAcao(dados) {
+    if (indiceHistorico < 0 || indiceHistorico >= estadosHistorico.length) return;
+    estadosHistorico[indiceHistorico] = JSON.stringify(dados);
+    persistirHistorico();
+}
 function aplicarEstadoHistorico(indice) {
+    if (workspaceAtual && workspaceAtual.role === 'viewer') return;
     const dados = JSON.parse(estadosHistorico[indice]);
     aplicandoHistorico = true;
     try {
@@ -84,22 +90,37 @@ function aplicarEstadoHistorico(indice) {
     notificarHistorico();
 }
 window.Planora_Historico = {
-    podeDesfazer: () => indiceHistorico > 0,
-    podeRefazer: () => indiceHistorico >= 0 && indiceHistorico < estadosHistorico.length - 1,
+    podeDesfazer: () => !(workspaceAtual && workspaceAtual.role === 'viewer') && indiceHistorico > 0,
+    podeRefazer: () => !(workspaceAtual && workspaceAtual.role === 'viewer') &&
+        indiceHistorico >= 0 && indiceHistorico < estadosHistorico.length - 1,
     desfazer: () => {
-        if (indiceHistorico > 0) aplicarEstadoHistorico(indiceHistorico - 1);
+        if (!(workspaceAtual && workspaceAtual.role === 'viewer') && indiceHistorico > 0) aplicarEstadoHistorico(indiceHistorico - 1);
     },
     refazer: () => {
-        if (indiceHistorico >= 0 && indiceHistorico < estadosHistorico.length - 1) aplicarEstadoHistorico(indiceHistorico + 1);
+        if (!(workspaceAtual && workspaceAtual.role === 'viewer') &&
+            indiceHistorico >= 0 && indiceHistorico < estadosHistorico.length - 1) aplicarEstadoHistorico(indiceHistorico + 1);
     }
 };
 function salvarBancoDeDados(dados) {
+    if (workspaceAtual && workspaceAtual.role === 'viewer') {
+        setStatus('Modo visualizador: alterações desativadas');
+        if (!avisoVisualizadorExibido) {
+            avisoVisualizadorExibido = true;
+            alert('Este workspace está em modo de visualização. Suas alterações não foram salvas.');
+        }
+        window.dispatchEvent(new CustomEvent('Planora-dados-restaurados', {
+            detail: { dados: lerBancoDeDados() }
+        }));
+        return false;
+    }
+    prepararRegistrosLocais(dados);
     const estadoAnterior = localStorage.getItem(chaveDb()) || '[]';
     const estadoNovo = JSON.stringify(dados);
     localStorage.setItem(chaveDb(), estadoNovo);
     if (!aplicandoHistorico) registrarEstadoHistorico(estadoAnterior, estadoNovo);
     if (nuvemAtiva()) { localStorage.setItem(chavePend(), '1'); seq++; }
     agendarEnvio();
+    return true;
 }
 function setStatus(t) {
     ultimoStatus = t;
