@@ -2,6 +2,7 @@
 /* ---------- Visão Kanban: colunas por rótulo, arraste entre colunas muda o rótulo ---------- */
 const itensSelecionados = new Set();
 let selecaoRetangular = null;
+let menuContextoSelecao = null;
 
 function atualizarSelecaoCards() {
     document.querySelectorAll('.kb-card[data-idx], #corpo-tabela tr[id^="linha-projeto-"]').forEach(el => {
@@ -13,6 +14,99 @@ function atualizarSelecaoCards() {
 function limparSelecaoCards() {
     itensSelecionados.clear();
     atualizarSelecaoCards();
+}
+
+function fecharMenuContextoSelecao() {
+    if (!menuContextoSelecao) return;
+    menuContextoSelecao.remove();
+    menuContextoSelecao = null;
+}
+
+function deletarSelecaoMultipla(indices) {
+    const selecionados = new Set(indices.map(index => db[index]).filter(Boolean));
+    if (!selecionados.size) return;
+
+    const itens = [...selecionados];
+    const nomes = itens.slice(0, 3).map(item => item.nome || 'Sem título').join(', ');
+    const mais = itens.length > 3 ? ` e mais ${itens.length - 3}` : '';
+    const pastasSelecionadas = itens.filter(item => item.tipo === 'pasta');
+    const avisoPastas = pastasSelecionadas.length
+        ? '\nItens não selecionados dentro das pastas serão preservados e movidos para a pasta superior disponível.'
+        : '';
+    if (!confirm(`Tem certeza que deseja deletar ${itens.length} itens selecionados?\n${nomes}${mais}.${avisoPastas}`)) return;
+
+    pastasSelecionadas.forEach(pasta => {
+        let novoPai = pasta.pai || null;
+        const visitados = new Set();
+        while (novoPai && !visitados.has(novoPai)) {
+            visitados.add(novoPai);
+            const ancestral = db.find(item => item.tipo === 'pasta' && item.id === novoPai);
+            if (!ancestral || !selecionados.has(ancestral)) break;
+            novoPai = ancestral.pai || null;
+        }
+        db.forEach(item => {
+            if (item !== pasta && item.pai === pasta.id && !selecionados.has(item)) item.pai = novoPai;
+        });
+    });
+
+    db.splice(0, db.length, ...db.filter(item => !selecionados.has(item)));
+    limparSelecaoCards();
+    salvarPastas();
+}
+
+function abrirMenuContextoSelecao(event) {
+    const alvo = event.target.closest('.kb-card[data-idx], #corpo-tabela tr[id^="linha-projeto-"]');
+    if (!alvo || event.target.closest('input, select, textarea, a, [contenteditable="true"]')) return;
+
+    const index = Number(alvo.dataset.idx || alvo.id.replace('linha-projeto-', ''));
+    if (!db[index]) return;
+
+    const indices = (itensSelecionados.has(index) ? [...itensSelecionados] : [index])
+        .filter(i => Number.isInteger(i) && db[i]);
+    if (!indices.length) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    fecharMenuContextoSelecao();
+    fecharMenusFlutuantes();
+
+    const multipla = itensSelecionados.has(index) && indices.length > 1;
+    const menu = document.createElement('div');
+    menu.id = 'menu-contexto-selecao';
+    menu.className = 'menu-tabela-flutuante menu-contexto-selecao';
+    menu.setAttribute('role', 'menu');
+    menu.setAttribute('aria-label', multipla ? 'Deletar itens selecionados' : 'Opções do item');
+    menu.innerHTML = `
+        ${multipla ? '' : '<button type="button" role="menuitem" data-acao="editar">Editar</button>'}
+        <button type="button" role="menuitem" data-acao="deletar" style="color:#ff4d4d">${multipla ? `Deletar seleção (${indices.length})` : 'Deletar'}</button>`;
+    document.body.appendChild(menu);
+    menuContextoSelecao = menu;
+
+    menu.style.position = 'fixed';
+    menu.style.right = 'auto';
+    menu.style.display = 'block';
+    const largura = menu.offsetWidth;
+    const altura = menu.offsetHeight;
+    const caixa = alvo.getBoundingClientRect();
+    const x = event.clientX || caixa.left;
+    const y = event.clientY || caixa.bottom;
+    menu.style.left = `${Math.max(8, Math.min(x, window.innerWidth - largura - 8))}px`;
+    menu.style.top = `${Math.max(8, Math.min(y, window.innerHeight - altura - 8))}px`;
+    menu.addEventListener('click', e => {
+        const botao = e.target.closest('button[data-acao]');
+        if (!botao) return;
+        fecharMenuContextoSelecao();
+        if (botao.dataset.acao === 'editar') {
+            if (visaoAtual === 'kanban') editarNoKanban(index);
+            else ativarEdicaoCompleta(index);
+        } else if (multipla) {
+            deletarSelecaoMultipla(indices);
+        } else if (db[index].tipo === 'pasta') {
+            excluirPasta(index);
+        } else {
+            deletarProjeto(index);
+        }
+    });
 }
 
 function indicesParaArrastar(index) {
@@ -98,6 +192,13 @@ document.addEventListener('click', e => {
     e.stopPropagation();
 }, true);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') limparSelecaoCards(); });
+document.addEventListener('contextmenu', abrirMenuContextoSelecao);
+document.addEventListener('pointerdown', e => {
+    if (menuContextoSelecao && !menuContextoSelecao.contains(e.target)) fecharMenuContextoSelecao();
+}, true);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharMenuContextoSelecao(); });
+window.addEventListener('scroll', fecharMenuContextoSelecao, true);
+window.addEventListener('resize', fecharMenuContextoSelecao);
 
 function moverSelecaoParaPasta(indices, pastaId) {
     const itens = indices.map(i => db[i]).filter(Boolean);
@@ -135,9 +236,13 @@ function aplicarVisao() {
     const kb = document.getElementById('kanban');
     const caixa = document.getElementById('conteudo-tabela');
     const slot = document.getElementById('topo-visao');
+    const filtros = document.getElementById('barra-filtros');
     if (!kb || !caixa) return;
     const vazio = !db.length;
     const kanban = visaoAtual === 'kanban';
+    if (vazio) filtrosTabelaVisiveis = false;
+    if (filtros) filtros.hidden = vazio || !filtrosTabelaVisiveis;
+    atualizarBotaoFiltrosTabela();
     if (slot) {
         slot.hidden = vazio;
         slot.innerHTML = `<span class="visao-toggle" role="group" aria-label="Visualização">
@@ -166,12 +271,19 @@ function htmlCardKanban(i) {
             <button type="button" onclick="${pasta ? 'excluirPasta' : 'deletarProjeto'}(${i})" style="color:#ff4d4d">Deletar</button>
         </div>
         ${prazo ? `<div class="kb-meta"><span class="kb-prazo">📅 ${escapeHTML(prazo)}</span></div>` : ''}
-        <div class="kb-tags">${(p.tags || []).map(htmlTagBolha).join('')}<button type="button" class="btn-tag-mais" onclick="abrirPopTags(event, ${i})" title="Adicionar tag" aria-label="Adicionar tag">+</button></div>
+        <div class="kb-tags">${(p.tags || []).map(htmlTagBolha).join('')}<button type="button" class="btn-tag-mais pilula-prazo" onclick="abrirPopTags(event, ${i})" title="Adicionar tag" aria-label="Adicionar tag">+</button></div>
     </article>`;
 }
 
-let inicioRotulosKanban = 0;
+let inicioRotulosKanban = Number.isInteger(preferenciasUsuario.kanbanInicio)
+    ? Math.max(0, preferenciasUsuario.kanbanInicio)
+    : 0;
 const ROTULOS_POR_TELA = 5;
+
+function salvarInicioRotulosKanban() {
+    preferenciasUsuario.kanbanInicio = inicioRotulosKanban;
+    salvarPreferenciasBanco({ ...lerPreferenciasBanco(), kanbanInicio: inicioRotulosKanban });
+}
 
 function abrirGerenciadorRotulos() {
     if (document.querySelector('.rotulos-overlay')) return;
@@ -249,6 +361,7 @@ function abrirGerenciadorRotulos() {
         preferenciasUsuario.kanbanColunas=opcoesRotulos.map(r=>r.nome);
         salvarBancoDeDados(db); salvarOpcoesGlobais();
         inicioRotulosKanban=Math.min(inicioRotulosKanban,Math.max(0,opcoesRotulos.length-ROTULOS_POR_TELA));
+        salvarInicioRotulosKanban();
         fechar(); aplicarVisao();
     };
     q('#rot-fechar').onclick=fechar; q('#rot-cancelar').onclick=fechar;
@@ -258,8 +371,9 @@ function abrirGerenciadorRotulos() {
 function fecharGerenciadorRotulos() { document.querySelector('.rotulos-overlay')?.remove(); }
 
 function navegarRotulosKanban(delta) {
-    const maximo = Math.max(0, ordemColunas().length - ROTULOS_POR_TELA);
+    const maximo = Math.max(0, colunasKanbanFiltradas().length - ROTULOS_POR_TELA);
     inicioRotulosKanban = Math.max(0, Math.min(maximo, inicioRotulosKanban + delta));
+    salvarInicioRotulosKanban();
     renderizarKanban();
 }
 
@@ -267,6 +381,11 @@ function ordemColunas() {
     const base = opcoesRotulos.map(r => r.nome);
     const salvo = Array.isArray(preferenciasUsuario.kanbanColunas) ? preferenciasUsuario.kanbanColunas : [];
     return [...salvo.filter(n => base.includes(n)), ...base.filter(n => !salvo.includes(n))];
+}
+
+function colunasKanbanFiltradas() {
+    return ordemColunas().filter(nome => !filtrosTabela.rotulo.length ||
+        filtrosTabela.rotulo.some(selecionado => normalizarFiltroTabela(nome) === normalizarFiltroTabela(selecionado)));
 }
 
 function renderizarKanban() {
@@ -279,13 +398,14 @@ function renderizarKanban() {
     const guardado = kb.querySelector('.kb-board');
     const rolagem = guardado ? guardado.scrollLeft : 0;
     const padrao = opcoesRotulos[0].nome;
-    const todasColunas = ordemColunas();
+    const todasColunas = colunasKanbanFiltradas();
     const maximoInicio = Math.max(0, todasColunas.length - ROTULOS_POR_TELA);
     inicioRotulosKanban = Math.max(0, Math.min(maximoInicio, inicioRotulosKanban));
     const nomesVisiveis = todasColunas.slice(inicioRotulosKanban, inicioRotulosKanban + ROTULOS_POR_TELA);
     const colunas = todasColunas.map(nome => ({ nome, cor: obterCorRotulo(nome), itens: [] }));
     db.forEach((p, i) => {
         if ((p.pai || null) !== (pastaAtual || null)) return;
+        if (!projetoCorrespondeFiltros(p)) return;
         const texto = [p.nome, p.rotulo, p.area, ...(p.tags || []).map(x => x.nome)].join(' ').toLowerCase();
         if (termo && !texto.includes(termo)) return;
         (colunas.find(c => c.nome === (p.rotulo || padrao)) || colunas.find(c => c.nome === padrao) || colunas[0]).itens.push(i);
@@ -338,13 +458,21 @@ window.addEventListener('pointermove', e => {
         a.indices.forEach(i => itensSelecionados.add(i));
         document.body.classList.add('arrastando');
         if (window.getSelection) window.getSelection().removeAllRanges();
+        const caixa = a.card.getBoundingClientRect();
         const g = a.card.cloneNode(true);
         g.classList.remove('arrastando-origem', 'selecionado');
-        g.classList.add('ghost-arrasto');
+        g.classList.add('ghost-arrasto', 'ghost-arrasto-tarefa');
         g.removeAttribute('id');
-        g.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+        g.removeAttribute('data-idx');
+        g.querySelectorAll('[id], [data-idx]').forEach(el => {
+            el.removeAttribute('id');
+            el.removeAttribute('data-idx');
+        });
         g.setAttribute('aria-hidden', 'true');
-        g.style.width = `${a.card.getBoundingClientRect().width}px`;
+        g.inert = true;
+        g.style.width = `${caixa.width}px`;
+        g.style.height = `${caixa.height}px`;
+        g.style.flex = 'none';
         if (a.indices.length > 1) {
             const quantidade = document.createElement('span');
             quantidade.className = 'ghost-arrasto-count';
@@ -447,9 +575,15 @@ window.addEventListener('pointermove', e => {
         a.col.classList.add('arrastando-origem');
         document.body.classList.add('arrastando');
         if (window.getSelection) window.getSelection().removeAllRanges();
-        const g = document.createElement('div');
-        g.className = 'ghost-arrasto';
-        g.textContent = a.col.dataset.rotulo;
+        const g = a.col.cloneNode(true);
+        g.classList.remove('arrastando-origem', 'drop-esq', 'drop-dir');
+        g.classList.add('ghost-arrasto', 'ghost-arrasto-coluna');
+        g.setAttribute('aria-hidden', 'true');
+        g.inert = true;
+        g.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+        g.querySelectorAll('.kb-card[data-idx]').forEach(el => el.removeAttribute('data-idx'));
+        g.style.width = `${a.col.getBoundingClientRect().width}px`;
+        g.style.flex = 'none';
         document.body.appendChild(g);
         a.ghost = g;
     }

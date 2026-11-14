@@ -4,11 +4,6 @@
 
         async function salvarEdicaoCard(index) {
 
-            const novoTipo =
-                document.getElementById(
-                    `edit-tipo-${index}`
-                ).value;
-
             const novoTitulo =
                 document.getElementById(
                     `edit-titulo-${index}`
@@ -103,9 +98,6 @@
                     card.tipoMidia =
                         null;
                 }
-
-                card.tipo =
-                    novoTipo;
 
                 card.titulo =
                     novoTitulo;

@@ -34,6 +34,9 @@
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
                 <input id="topo-busca" type="search" placeholder="Buscar páginas..." autocomplete="off">
             </label>
+            ${topo.dataset.filtros === 'true' ? `<button class="btn-filtros-topo" id="topo-filtros" type="button" title="Abrir filtros" aria-label="Abrir filtros" aria-expanded="false" aria-controls="barra-filtros">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16l-6.5 7.5v5L10 19v-6.5L4 5z"></path></svg>
+            </button>` : ''}
             <button class="btn-novo" id="topo-novo" type="button">
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
                 <span>Nova Página</span>
@@ -66,7 +69,7 @@
         <section class="painel-secao" aria-labelledby="painel-tit-ws">
             <h3 class="painel-secao-titulo" id="painel-tit-ws">Workspaces</h3>
             <div class="painel-ws" id="painel-ws">
-                <p class="painel-lateral-vazio">Os workspaces da sua conta aparecem aqui quando a nuvem estiver ativa.</p>
+                <p class="painel-lateral-vazio">Workspaces aceitos aparecem aqui. Convites pendentes ficam no menu de seleção.</p>
             </div>
         </section>
         <section class="painel-secao" id="painel-areas-secao" aria-labelledby="painel-tit-areas" hidden>
@@ -98,6 +101,7 @@
         if (devolverFoco) btnPainel.focus();
     }
     function abrirPainelLateral() {
+        desenharWorkspaces();
         painelLateral.classList.add('aberto');
         painelLateral.setAttribute('aria-hidden', 'false');
         painelLateral.inert = false;
@@ -164,6 +168,10 @@
 
     const busca = document.getElementById('topo-busca'), novo = document.getElementById('topo-novo');
     const acao = document.getElementById('topo-acao');
+    const btnFiltros = document.getElementById('topo-filtros');
+    if (btnFiltros) btnFiltros.addEventListener('click', () => {
+        if (typeof window.aoAlternarFiltros === 'function') window.aoAlternarFiltros();
+    });
     if (acao) acao.addEventListener('click', () => {
         if (typeof window.aoNovoRegistro === 'function') window.aoNovoRegistro();
     });
@@ -202,8 +210,10 @@
     const btnRefazer = document.getElementById('topo-refazer');
     function atualizarHistorico() {
         const historico = window.Planora_Historico;
-        btnDesfazer.disabled = !historico || !historico.podeDesfazer();
-        btnRefazer.disabled = !historico || !historico.podeRefazer();
+        const somenteLeitura = window.Planora_Workspaces &&
+            window.Planora_Workspaces.atual && window.Planora_Workspaces.atual.role === 'viewer';
+        btnDesfazer.disabled = somenteLeitura || !historico || !historico.podeDesfazer();
+        btnRefazer.disabled = somenteLeitura || !historico || !historico.podeRefazer();
     }
     btnDesfazer.addEventListener('click', () => {
         if (window.Planora_Historico) window.Planora_Historico.desfazer();
@@ -213,6 +223,18 @@
     });
     window.addEventListener('Planora-historico-atualizado', atualizarHistorico);
     atualizarHistorico();
+    function atualizarPermissoesWorkspace() {
+        const ws = window.Planora_Workspaces && window.Planora_Workspaces.atual;
+        if (!ws) return;
+        const somenteLeitura = ws.role === 'viewer';
+        document.documentElement.dataset.workspaceRole = ws.role || 'owner';
+        [acao, novo, novaPasta, document.getElementById('topo-mais-opcoes')].forEach(botao => {
+            if (botao) botao.disabled = somenteLeitura;
+        });
+        atualizarHistorico();
+    }
+    window.addEventListener('Planora-workspace-atualizado', atualizarPermissoesWorkspace);
+    atualizarPermissoesWorkspace();
 
     /* Workspaces da conta: lista no painel lateral e nome do workspace aberto no início do caminho. */
     const painelWs = document.getElementById('painel-ws');
@@ -239,26 +261,34 @@
             nome.className = 'ws-painel-nome';
             nome.textContent = w.nome;
             b.append(av, nome);
+            if (w.role !== 'owner') {
+                const papel = document.createElement('span');
+                papel.className = 'ws-painel-papel';
+                papel.textContent = w.role === 'editor' ? 'Editor' : 'Visualizador';
+                b.appendChild(papel);
+            }
             b.addEventListener('click', () => {
                 if (ativo) { fecharPainelLateral(true); return; }
                 b.disabled = true;
                 Promise.resolve(api.selecionar(w.id)).then(ok => { if (ok === false) b.disabled = false; });
             });
             li.appendChild(b);
-            const renomear = document.createElement('button');
-            renomear.type = 'button';
-            renomear.className = 'ws-painel-renomear';
-            renomear.textContent = '✎';
-            renomear.title = 'Renomear ' + w.nome;
-            renomear.setAttribute('aria-label', 'Renomear ' + w.nome);
-            renomear.addEventListener('click', e => {
-                e.stopPropagation();
-                renomear.disabled = true;
-                Promise.resolve(api.renomear(w.id))
-                    .catch(erro => { console.error(erro); alert('Não foi possível renomear o workspace: ' + (erro.message || erro)); })
-                    .finally(() => { renomear.disabled = false; });
-            });
-            li.appendChild(renomear);
+            if (w.role === 'owner') {
+                const renomear = document.createElement('button');
+                renomear.type = 'button';
+                renomear.className = 'ws-painel-renomear';
+                renomear.textContent = '✎';
+                renomear.title = 'Renomear ' + w.nome;
+                renomear.setAttribute('aria-label', 'Renomear ' + w.nome);
+                renomear.addEventListener('click', e => {
+                    e.stopPropagation();
+                    renomear.disabled = true;
+                    Promise.resolve(api.renomear(w.id))
+                        .catch(erro => { console.error(erro); alert('Não foi possível renomear o workspace: ' + (erro.message || erro)); })
+                        .finally(() => { renomear.disabled = false; });
+                });
+                li.appendChild(renomear);
+            }
             lista.appendChild(li);
         });
         const acoes = document.createElement('div');
