@@ -101,14 +101,13 @@
 /* Navegação e gerenciamento de rótulos do Kanban */
 .rotulo-nome-estatico{display:flex;align-items:center;background:transparent}
 
-.topo-mais{position:relative;display:inline-flex}
-.btn-mais-opcoes{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;padding:0;border:1px solid var(--borda);border-radius:var(--raio-m);background:var(--surface-2);color:var(--texto-2);font-size:22px;line-height:1;cursor:pointer}
-.btn-mais-opcoes:hover,.btn-mais-opcoes[aria-expanded="true"]{background:var(--surface-3);border-color:var(--borda-forte);color:var(--titulo)}
-.menu-mais-opcoes{position:absolute;z-index:320;top:calc(100% + 8px);right:0;width:210px;padding:5px;background:var(--vidro-forte);border:1px solid var(--borda);border-radius:var(--raio-m);box-shadow:var(--sombra-m);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
-.menu-mais-opcoes[hidden]{display:none}
-.menu-mais-opcoes button{display:block;width:100%;padding:9px 12px;border:0;border-radius:var(--raio-s);background:transparent;color:var(--texto);font:inherit;font-size:13px;text-align:left;cursor:pointer}
-.menu-mais-opcoes button:hover,.menu-mais-opcoes button:focus-visible{background:var(--surface-3);color:var(--titulo)}
-@media(max-width:700px){.topo-mais{margin-left:auto}.btn-mais-opcoes{width:40px;height:36px}}
+.topo-perfil{position:relative;display:inline-flex;align-items:center}
+.menu-perfil{position:absolute;z-index:320;top:calc(100% + 8px);right:0;width:220px;padding:5px;background:var(--vidro-forte);border:1px solid var(--borda);border-radius:var(--raio-m);box-shadow:var(--sombra-m);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+.menu-perfil[hidden]{display:none}
+.menu-perfil button{display:block;width:100%;padding:9px 12px;border:0;border-radius:var(--raio-s);background:transparent;color:var(--texto);font:inherit;font-size:13px;text-align:left;cursor:pointer}
+.menu-perfil button:hover,.menu-perfil button:focus-visible{background:var(--surface-3);color:var(--titulo)}
+.menu-perfil button:last-child{margin-top:4px;border-top:1px solid var(--borda);border-radius:0 0 var(--raio-s) var(--raio-s);color:var(--perigo)}
+.menu-perfil button:last-child:hover,.menu-perfil button:last-child:focus-visible{background:color-mix(in srgb,var(--perigo) 12%,transparent);color:var(--perigo)}
 
 /* Paginação do Kanban no padrão dos demais botões de ação */
 .kb-navegacao{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin:0 0 14px;padding:0}
@@ -328,28 +327,30 @@ html[data-tema="claro"] .kb-prazo,html[data-tema="claro"] .pilula-prazo{backgrou
   }
 
   /* BotÃ£o de tema */
-  header.topo:not(:has(.topo-dir.solo)) .btn-tema {
+  header.topo:not(:has(.topo-dir.solo)) .topo-perfil {
     grid-area: tema;
     align-self: center;
     justify-self: end;
 
     display: inline-flex !important;
     align-items: center;
-    justify-content: center;
+    margin: 0 !important;
+  }
 
+  header.topo:not(:has(.topo-dir.solo)) .btn-perfil {
     width: 42px !important;
     min-width: 42px !important;
     height: 42px !important;
-    margin: 0 !important;
     padding: 0 !important;
-
-    border-radius: 50%;
-    background: var(--surface-2);
   }
 
-  header.topo:not(:has(.topo-dir.solo)) .btn-tema svg {
-    width: 19px;
-    height: 19px;
+  header.topo:not(:has(.topo-dir.solo)) .menu-perfil {
+    top: calc(100% + 6px);
+    right: 0;
+  }
+
+  header.topo:not(:has(.topo-dir.solo)) .menu-perfil button {
+    display: block !important;
   }
 
   /* Busca */
@@ -444,8 +445,8 @@ html[data-tema="claro"] .kb-prazo,html[data-tema="claro"] .pilula-prazo{backgrou
   /* Controles retirados apenas do header mobile */
   header.topo:not(:has(.topo-dir.solo)) .topo-visao,
   header.topo:not(:has(.topo-dir.solo)) #topo-nova-pasta,
-  header.topo:not(:has(.topo-dir.solo)) .topo-mais {
-    display: none !important;
+  header.topo:not(:has(.topo-dir.solo)) .topo-perfil {
+    display: inline-flex !important;
   }
 
   /*
@@ -495,7 +496,7 @@ html[data-tema="claro"] .kb-prazo,html[data-tema="claro"] .pilula-prazo{backgrou
   }
 
   header.topo:not(:has(.topo-dir.solo)) .marca-P,
-  header.topo:not(:has(.topo-dir.solo)) .btn-tema {
+  header.topo:not(:has(.topo-dir.solo)) .btn-perfil {
     width: 40px !important;
     min-width: 40px !important;
     height: 40px !important;

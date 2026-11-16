@@ -14,6 +14,8 @@
 .btn-tema,.btn-voltar,.btn-editar-dados{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;padding:0;border:1px solid var(--borda);
   background:var(--surface-2);color:var(--texto-2);cursor:pointer;text-decoration:none}
 .btn-tema{width:36px;height:36px;border-radius:50%}
+.btn-perfil{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:36px;height:36px;padding:0;border:1px solid var(--borda);border-radius:50%;background:var(--surface-2);color:var(--texto-2);cursor:pointer}
+.btn-perfil:hover,.btn-perfil[aria-expanded="true"]{background:var(--surface-3);color:var(--titulo);border-color:var(--borda-forte)}
 .btn-voltar{width:34px;height:34px;border-radius:var(--raio-s);font-size:20px;line-height:1}
 .btn-editar-dados{width:28px;height:28px;border-radius:50%;background:transparent}
 .btn-tema:hover,.btn-voltar:hover,.btn-editar-dados:hover{background:var(--surface-3);color:var(--titulo);border-color:var(--borda-forte)}

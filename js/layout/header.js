@@ -45,14 +45,17 @@
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 10v8M8 14h8"></path><path d="M3 7a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
                 <span>Nova pasta</span>
             </button>`}
-            ${simples ? '' : `<div class="topo-mais">
-                <button class="btn-mais-opcoes" id="topo-mais-opcoes" type="button" title="Mais opções" aria-label="Mais opções" aria-haspopup="menu" aria-expanded="false">⋯</button>
-                <div class="menu-mais-opcoes" id="menu-mais-opcoes" role="menu" hidden>
-                    <button type="button" role="menuitem" id="mais-criar-rotulo">Criar ou editar rótulo</button>
-                    <button type="button" role="menuitem" id="mais-criar-area">Criar ou editar área</button>
+            <div class="topo-perfil">
+                <button class="btn-perfil" id="topo-perfil" type="button" title="Abrir menu do perfil" aria-label="Abrir menu do perfil" aria-haspopup="menu" aria-expanded="false" aria-controls="menu-perfil">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 21v-1.5a7 7 0 0 1 14 0V21z"></path></svg>
+                </button>
+                <div class="menu-perfil" id="menu-perfil" role="menu" hidden>
+                    <button type="button" role="menuitem" id="perfil-criar-rotulo">Criar ou editar rótulo</button>
+                    <button type="button" role="menuitem" id="perfil-criar-area">Criar ou editar área</button>
+                    <button type="button" role="menuitem" id="perfil-alternar-tema"></button>
+                    <button type="button" role="menuitem" id="perfil-sair">Sair da conta</button>
                 </div>
-            </div>`}
-            <button class="btn-tema" id="topo-tema" type="button"></button>
+            </div>
         </div>`;
 
     const painelLateral = document.createElement('aside');
@@ -186,14 +189,10 @@
     });
 
     /* Modo claro / escuro (a escolha fica salva neste navegador). */
-    const ICONE_SOL = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg>';
-    const ICONE_LUA = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>';
-    const btnTema = document.getElementById('topo-tema');
+    const btnTema = document.getElementById('perfil-alternar-tema');
     function atualizarBotaoTema() {
         const claro = document.documentElement.dataset.tema === 'claro';
-        btnTema.innerHTML = claro ? ICONE_LUA : ICONE_SOL;
-        btnTema.title = claro ? 'Ativar modo escuro' : 'Ativar modo claro';
-        btnTema.setAttribute('aria-label', btnTema.title);
+        btnTema.textContent = claro ? 'Ativar modo escuro' : 'Ativar modo claro';
     }
     btnTema.addEventListener('click', () => {
         const novo = document.documentElement.dataset.tema === 'claro' ? 'escuro' : 'claro';
@@ -288,16 +287,37 @@
         api.telaInicial();
     });
 
-    const btnMais = document.getElementById('topo-mais-opcoes');
-    const menuMais = document.getElementById('menu-mais-opcoes');
-    function fecharMenuMais() { if (menuMais && btnMais) { menuMais.hidden = true; btnMais.setAttribute('aria-expanded', 'false'); } }
-    if (btnMais && menuMais) {
-        btnMais.addEventListener('click', e => { e.stopPropagation(); const abrir = menuMais.hidden; fecharMenuMais(); if (abrir) { menuMais.hidden = false; btnMais.setAttribute('aria-expanded', 'true'); } });
-        document.getElementById('mais-criar-area').addEventListener('click', () => { fecharMenuMais(); if (window.Planora_Areas) window.Planora_Areas.gerenciar(); });
-        document.getElementById('mais-criar-rotulo').addEventListener('click', () => { fecharMenuMais(); if (typeof window.abrirGerenciadorRotulos === 'function') window.abrirGerenciadorRotulos(); });
-        document.addEventListener('click', e => { if (!e.target.closest('.topo-mais')) fecharMenuMais(); });
-        document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharMenuMais(); });
+    const btnPerfil = document.getElementById('topo-perfil');
+    const menuPerfil = document.getElementById('menu-perfil');
+    function fecharMenuPerfil(devolverFoco) {
+        menuPerfil.hidden = true;
+        btnPerfil.setAttribute('aria-expanded', 'false');
+        if (devolverFoco) btnPerfil.focus();
     }
+    btnPerfil.addEventListener('click', e => {
+        e.stopPropagation();
+        menuPerfil.hidden = !menuPerfil.hidden;
+        btnPerfil.setAttribute('aria-expanded', String(!menuPerfil.hidden));
+    });
+    document.getElementById('perfil-criar-area').addEventListener('click', () => {
+        fecharMenuPerfil();
+        if (window.Planora_Areas) window.Planora_Areas.gerenciar();
+    });
+    document.getElementById('perfil-criar-rotulo').addEventListener('click', () => {
+        fecharMenuPerfil();
+        if (typeof window.abrirGerenciadorRotulos === 'function') window.abrirGerenciadorRotulos();
+    });
+    btnTema.addEventListener('click', () => fecharMenuPerfil());
+    document.getElementById('perfil-sair').addEventListener('click', () => {
+        fecharMenuPerfil();
+        window.sairDaConta();
+    });
+    document.addEventListener('click', e => {
+        if (!e.target.closest('.topo-perfil')) fecharMenuPerfil();
+    });
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && !menuPerfil.hidden) fecharMenuPerfil(true);
+    });
 
     window.Planora_Topo = { definirAtual: montarMigalha, definirCaminho: montarCaminho };
 })();
