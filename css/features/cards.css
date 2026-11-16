@@ -31,7 +31,7 @@
 @keyframes cardSai{to{opacity:0;transform:translateY(-10px) scale(.98)}}
 .form-novo-card[hidden]+#feed-timeline .timeline-item:first-child{margin-top:0}
 .btn-mais-card{position:absolute;top:46px;right:-64px;display:flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;
-  background:var(--accent-btn);color:var(--on-accent);cursor:pointer;box-shadow:0 8px 20px -8px color-mix(in srgb,var(--accent-btn) 80%,transparent)}
+  background:var(--accent-btn);color:var(--on-accent);cursor:pointer}
 .btn-mais-card:hover{filter:brightness(1.12)}
 .btn-mais-card svg path{transition:opacity .15s}
 .btn-mais-card.aberto svg path:nth-child(2){opacity:0}
@@ -78,7 +78,7 @@
 .card-cabecalho-conteudo h3{flex:1;min-width:0;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .timeline-card:not(.minimizado) .card-cabecalho-conteudo{align-items:center;margin-bottom:18px}
 .timeline-card:not(.minimizado) .card-cabecalho-conteudo h3{white-space:normal;overflow:visible;overflow-wrap:anywhere;text-overflow:clip}
-.btn-tag-mais,.btn-editar-dados{border:1px solid var(--controle-ui-borda);background:var(--controle-ui-bg);color:var(--controle-ui-texto);box-shadow:var(--controle-ui-sombra)}
+.btn-tag-mais,.btn-editar-dados{border:1px solid var(--controle-ui-borda);background:var(--controle-ui-bg);color:var(--controle-ui-texto)}
 .btn-tag-mais{width:30px;height:30px;font-size:17px}
 .btn-editar-dados{width:34px;height:34px;border-radius:50%}
 .btn-tag-mais:hover,.btn-editar-dados:hover{background:var(--controle-ui-hover);border-color:var(--controle-ui-borda);color:var(--controle-ui-texto)}

@@ -71,10 +71,6 @@
             <div class="painel-ws" id="painel-ws">
                 <p class="painel-lateral-vazio">Os workspaces da sua conta aparecem aqui quando a nuvem estiver ativa.</p>
             </div>
-        </section>
-        <section class="painel-secao" id="painel-areas-secao" aria-labelledby="painel-tit-areas" hidden>
-            <h3 class="painel-secao-titulo" id="painel-tit-areas">Áreas</h3>
-            <div id="painel-areas"></div>
         </section>`;
     const fundoPainel = document.createElement('button');
     fundoPainel.className = 'fundo-painel-lateral';
@@ -281,36 +277,6 @@
     }
     window.addEventListener('Planora-workspace-atualizado', desenharWorkspaces);
     desenharWorkspaces();
-
-    /* Áreas do workspace aberto: lista com cor e quantidade de itens, e atalho para o gerenciador. */
-    const secaoAreas = document.getElementById('painel-areas-secao');
-    const painelAreas = document.getElementById('painel-areas');
-    function desenharAreas() {
-        const areas = window.Planora_Areas, ws = window.Planora_Workspaces;
-        if (!areas || !ws || !ws.atual) return;
-        secaoAreas.hidden = false;
-        const usos = areas.contar();
-        painelAreas.innerHTML = '';
-        const lista = document.createElement('ul');
-        lista.className = 'ar-painel-lista';
-        areas.listar().forEach(a => {
-            const li = document.createElement('li');
-            li.style.setProperty('--cor-area', a.cor);
-            const ponto = document.createElement('span');
-            ponto.className = 'ar-ponto';
-            const nome = document.createElement('span');
-            nome.className = 'ar-painel-nome';
-            nome.textContent = a.nome;
-            const qtd = document.createElement('span');
-            qtd.className = 'ar-painel-qtd';
-            qtd.textContent = usos[a.nome] || 0;
-            li.append(ponto, nome, qtd);
-            lista.appendChild(li);
-        });
-        painelAreas.appendChild(lista);
-    }
-    ['Planora-areas-atualizadas', 'Planora-workspace-atualizado', 'Planora-dados-restaurados'].forEach(ev => window.addEventListener(ev, desenharAreas));
-    desenharAreas();
 
     document.querySelector('.marca-P').addEventListener('click', e => {
         const api = window.Planora_Workspaces;

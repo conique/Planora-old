@@ -19,6 +19,8 @@ html[data-tema="claro"] .selo-rotulo,html[data-tema="claro"] .pilula-area{backgr
   background:var(--campo);color:var(--texto);border:1px solid var(--borda);border-radius:var(--raio-m);font:inherit;transition:border-color .15s,box-shadow .15s}
 .input-inline-tabela,.select-inline-tabela{padding:6px 10px;font-size:13px;width:100%;max-width:320px;border-radius:var(--raio-s)}
 .select-inline-tabela{width:auto}
+select option{background:var(--vidro-forte);color:var(--texto);padding:4px 7px}
+select option:hover,select option:checked{background:var(--surface-3);color:var(--texto)}
 .modal-card input:not([type="radio"]),.modal-card select,.modal-card textarea,.lg-card input,.lg-card select,.lg-card textarea{width:100%;min-height:42px;padding:8px 14px}
 .input-texto{width:100%;padding:10px 16px;font-size:15px;margin-bottom:16px;border-radius:var(--raio-l)}
 .input-legenda-card{display:block;width:100%;padding:10px 16px;font-size:15px;border-radius:var(--raio-l);resize:vertical}

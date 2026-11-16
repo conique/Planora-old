@@ -28,7 +28,7 @@
 /* principal: verde da marca com texto escuro, em qualquer tema */
 .btn-novo,.btn-criar-destaque,.btn-salvar,.btn-enviar-card,.lg-principal,.btn-salvar-inline,.nota-nova button,.ws-btn-criar,.ws-painel-acao.principal,.ar-btn-pri{
   display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:var(--raio-pilula);background:var(--accent-btn);color:var(--on-accent);
-  font-weight:700;cursor:pointer;box-shadow:0 6px 16px -8px color-mix(in srgb,var(--accent-btn) 70%,transparent);transition:filter .15s,transform .15s}
+  font-weight:700;cursor:pointer;transition:filter .15s,transform .15s}
 .btn-novo{padding:7px 14px;font-size:12.5px;border-radius:var(--raio-m)}
 .btn-criar-destaque,.btn-salvar{padding:10px 22px;font-size:13px}
 .btn-salvar-inline,.ar-btn-pri{padding:6px 14px;font-size:12.5px}

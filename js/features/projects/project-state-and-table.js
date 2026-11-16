@@ -81,12 +81,63 @@ if (rotuloEsperando && rotuloEsperando.cor !== '#a855f7') {
 }
 
 /* Áreas: vêm do workspace aberto (Planora_Areas, em db.js) e podem ser criadas, renomeadas e coloridas em "Gerenciar áreas". */
-function opcoesAreaHtml(atual) {
+function nomesOpcoesArea(atual) {
     const nomes = Planora_Areas.nomes();
     if (atual && !nomes.includes(atual)) nomes.push(atual);
+    return nomes;
+}
+function opcoesAreaHtml(atual) {
+    const nomes = nomesOpcoesArea(atual);
     return nomes
         .map(a => `<option value="${escapeHTML(a)}"${a === atual ? ' selected' : ''}>${escapeHTML(a)}</option>`)
         .join('');
+}
+function htmlDropdownEdicao(id, rotulo, atual, valores) {
+    const valor = valores.includes(atual) ? atual : valores[0] || '';
+    return `<input type="hidden" id="${id}" value="${escapeHTML(valor)}">
+        <details class="filtro-tabela-campo filtro-tabela-dropdown select-edicao-dropdown" data-input-id="${id}">
+            <summary title="${escapeHTML(valor)}">${escapeHTML(valor)}</summary>
+            <div class="filtro-tabela-opcoes" role="group" aria-label="${escapeHTML(rotulo)}">
+                ${valores.map(opcao => `<button type="button" class="filtro-tabela-opcao select-edicao-opcao"
+                    data-valor="${escapeHTML(opcao)}" aria-pressed="${opcao === valor}">${escapeHTML(opcao)}</button>`).join('')}
+            </div>
+        </details>`;
+}
+function ativarDropdownEdicao(dropdown) {
+    const resumo = dropdown.querySelector('summary');
+    const opcoes = dropdown.querySelector('.filtro-tabela-opcoes');
+    const campo = document.getElementById(dropdown.dataset.inputId);
+
+    dropdown.addEventListener('toggle', () => {
+        if (!dropdown.open) return;
+        const caixa = resumo.getBoundingClientRect();
+        const alturaMaxima = Math.min(260, Math.max(1, window.innerHeight - 16));
+        opcoes.style.maxHeight = `${alturaMaxima}px`;
+        const altura = Math.min(opcoes.scrollHeight, alturaMaxima);
+        const espacoAbaixo = window.innerHeight - caixa.bottom - 5;
+        const espacoAcima = caixa.top - 5;
+        const abrirAcima = espacoAbaixo < altura && espacoAcima > espacoAbaixo;
+        const topo = abrirAcima
+            ? Math.max(8, caixa.top - altura - 5)
+            : Math.max(8, Math.min(caixa.bottom + 5, window.innerHeight - altura - 8));
+        opcoes.style.left = `${Math.max(8, Math.min(caixa.left, window.innerWidth - caixa.width - 8))}px`;
+        opcoes.style.top = `${topo}px`;
+        opcoes.style.width = `${caixa.width}px`;
+    });
+
+    dropdown.querySelectorAll('.select-edicao-opcao').forEach(opcao => {
+        opcao.addEventListener('click', event => {
+            event.stopPropagation();
+            campo.value = opcao.dataset.valor;
+            resumo.textContent = opcao.textContent;
+            resumo.title = opcao.textContent;
+            dropdown.querySelectorAll('.select-edicao-opcao').forEach(item => {
+                item.setAttribute('aria-pressed', String(item === opcao));
+            });
+            dropdown.open = false;
+            resumo.focus();
+        });
+    });
 }
 function renderizarOpcoesAreaNovaPagina() {
     const caixa = document.getElementById('tipo-selecao-areas');
@@ -395,6 +446,20 @@ window.aoAlternarFiltros = alternarFiltrosTabela;
 document.getElementById('barra-filtros')?.addEventListener('change', event => {
     const checkbox = event.target.closest('input[type="checkbox"][data-filtro-tipo]');
     if (checkbox) atualizarFiltroTabela(checkbox.dataset.filtroTipo, checkbox.value, checkbox.checked);
+});
+
+document.addEventListener('click', event => {
+    document.querySelectorAll('.select-edicao-dropdown[open]').forEach(dropdown => {
+        if (!dropdown.contains(event.target)) dropdown.open = false;
+    });
+});
+
+document.addEventListener('keydown', event => {
+    if (event.key !== 'Escape') return;
+    const dropdown = document.querySelector('.select-edicao-dropdown[open]');
+    if (!dropdown) return;
+    dropdown.open = false;
+    dropdown.querySelector('summary').focus();
 });
 
 function projetoCorrespondeFiltros(projeto) {
@@ -921,38 +986,14 @@ function ativarEdicaoCompleta(index) {
 
         <td>
 
-            <select
-                id="edit-rotulo-${index}"
-                class="select-inline-tabela"
-            >
-
-                ${opcoesRotulos
-                    .map(
-                        r =>
-                            `<option
-                                ${r.nome === p.rotulo ? 'selected' : ''}
-                            >
-                                ${escapeHTML(r.nome)}
-                            </option>`
-                    )
-                    .join('')
-                }
-
-            </select>
+            ${htmlDropdownEdicao(`edit-rotulo-${index}`, 'Rótulo', p.rotulo, opcoesRotulos.map(rotulo => rotulo.nome))}
 
         </td>
 
 
         <td>
 
-            <select
-                id="edit-area-${index}"
-                class="select-inline-tabela"
-            >
-
-                ${opcoesAreaHtml(p.area)}
-
-            </select>
+            ${htmlDropdownEdicao(`edit-area-${index}`, 'Área', p.area, nomesOpcoesArea(p.area))}
 
         </td>
 
@@ -986,6 +1027,8 @@ function ativarEdicaoCompleta(index) {
         </td>
 
     `;
+
+    tr.querySelectorAll('.select-edicao-dropdown').forEach(ativarDropdownEdicao);
 
 }
 
