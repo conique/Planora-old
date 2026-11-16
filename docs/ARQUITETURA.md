@@ -17,9 +17,13 @@
 
 ## Páginas
 
-- `index.html`: HTML limpo e scripts da feature `projects`.
+- `index.html`: entrada para selecionar, criar e gerenciar workspaces.
+- `workspace.html`: projetos e Kanban do workspace selecionado.
 - `cards.html`: HTML limpo e scripts da feature `cards`.
-- `workspaces.html`: entrada da seleção de workspaces.
+- `workspaces.html`: redirecionamento de compatibilidade para `index.html`.
+
+Os links do workspace e dos projetos carregam o identificador do workspace na URL,
+para que uma página possa ser aberta diretamente sem depender do workspace ativo na aba.
 
 ## CSS
 

@@ -15,11 +15,11 @@ renderizarTimeline = async function () {
             pid = f.pai;
         }
         Planora_Topo.definirCaminho([
-            ...cadeia.map(f => ({ nome: f.nome, pasta: f.id, href: 'index.html?pasta=' + f.id })),
+            ...cadeia.map(f => ({ nome: f.nome, pasta: f.id, href: urlWorkspace(workspaceAtual ? workspaceAtual.id : null, { pasta: f.id }) })),
             { nome: projetoAtual.nome }
         ]);
         const voltar = document.querySelector('.btn-voltar');
-        if (voltar && projetoAtual.pai) voltar.href = 'index.html?pasta=' + projetoAtual.pai;
+        if (voltar) voltar.href = urlWorkspace(workspaceAtual ? workspaceAtual.id : null, projetoAtual.pai ? { pasta: projetoAtual.pai } : {});
     }
     sincronizarFormulario();
     sincronizarMinimizar();
@@ -30,7 +30,7 @@ window.addEventListener('Planora-dados-restaurados', e => {
     db = e.detail.dados;
     projetoAtual = db[projetoId];
     if (!projetoAtual) {
-        window.location.href = 'index.html';
+        window.location.href = urlWorkspace(workspaceAtual ? workspaceAtual.id : null);
         return;
     }
     renderizarTimeline();

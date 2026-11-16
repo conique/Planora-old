@@ -1,9 +1,9 @@
 (function () {
     'use strict';
     const scripts = [
-        "js/features/projects/project-state-and-table.js?v=20261115-nc1",
+        "js/features/projects/project-state-and-table.js?v=20261116-nc1",
         "js/features/projects/project-tags.js",
-        "js/features/projects/project-kanban-and-drag.js?v=20261114-nc5",
+        "js/features/projects/project-kanban-and-drag.js?v=20261116-nc2",
         "js/features/projects/project-folders-and-init.js"
     ];
     function carregarSequencialmente(indice = 0) {

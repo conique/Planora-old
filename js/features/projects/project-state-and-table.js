@@ -565,7 +565,7 @@ function renderizarTabela() {
             ) {
 
                 if (projeto.tipo === 'pasta') irParaPasta(projeto.id);
-                else location.href = `cards.html?id=${index}`;
+                else location.href = urlCardsProjeto(index);
 
             }
 
@@ -915,7 +915,7 @@ async function salvarNovoProjeto() {
     await descarregarNuvem();
     permitirNavegacaoComPendencias();
     location.href =
-        `cards.html?id=${db.length - 1}`;
+        urlCardsProjeto(db.length - 1);
 
 }
 

@@ -279,6 +279,7 @@ let inicioRotulosKanban = Number.isInteger(preferenciasUsuario.kanbanInicio)
     ? Math.max(0, preferenciasUsuario.kanbanInicio)
     : 0;
 const ROTULOS_POR_TELA = 5;
+let navegacaoKanbanEmAndamento = false;
 
 function salvarInicioRotulosKanban() {
     preferenciasUsuario.kanbanInicio = inicioRotulosKanban;
@@ -394,10 +395,44 @@ function abrirGerenciadorRotulos() {
 function fecharGerenciadorRotulos() { document.querySelector('.rotulos-overlay')?.remove(); }
 
 function navegarRotulosKanban(delta) {
+    if (navegacaoKanbanEmAndamento) return;
     const maximo = Math.max(0, colunasKanbanFiltradas().length - ROTULOS_POR_TELA);
-    inicioRotulosKanban = Math.max(0, Math.min(maximo, inicioRotulosKanban + delta));
-    salvarInicioRotulosKanban();
-    renderizarKanban();
+    const novoInicio = Math.max(0, Math.min(maximo, inicioRotulosKanban + delta));
+    if (novoInicio === inicioRotulosKanban) return;
+
+    const board = document.querySelector('#kanban .kb-board');
+    const movimentoReduzido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!board || movimentoReduzido || typeof board.animate !== 'function') {
+        inicioRotulosKanban = novoInicio;
+        salvarInicioRotulosKanban();
+        renderizarKanban();
+        return;
+    }
+
+    navegacaoKanbanEmAndamento = true;
+    const direcao = delta > 0 ? -1 : 1;
+    const saida = board.animate([
+        { opacity: 1, transform: 'translateX(0)' },
+        { opacity: 0, transform: `translateX(${direcao * 32}px)` }
+    ], { duration: 180, easing: 'ease-in', fill: 'forwards' });
+
+    saida.onfinish = () => {
+        inicioRotulosKanban = novoInicio;
+        salvarInicioRotulosKanban();
+        renderizarKanban();
+
+        const proximoBoard = document.querySelector('#kanban .kb-board');
+        if (!proximoBoard) {
+            navegacaoKanbanEmAndamento = false;
+            return;
+        }
+
+        const entrada = proximoBoard.animate([
+            { opacity: 0, transform: `translateX(${-direcao * 32}px)` },
+            { opacity: 1, transform: 'translateX(0)' }
+        ], { duration: 240, easing: 'ease-out' });
+        entrada.onfinish = () => { navegacaoKanbanEmAndamento = false; };
+    };
 }
 
 function ordemColunas() {
@@ -456,7 +491,7 @@ document.getElementById('kanban').addEventListener('click', e => {      // cliqu
     const card = e.target.closest('.kb-card');
     if (!card || e.target.closest('button, a, input')) return;
     const i = Number(card.dataset.idx), p = db[i];
-    if (p.tipo === 'pasta') irParaPasta(p.id); else location.href = `cards.html?id=${i}`;
+    if (p.tipo === 'pasta') irParaPasta(p.id); else location.href = urlCardsProjeto(i);
 });
 
 let arrastoKb = null;

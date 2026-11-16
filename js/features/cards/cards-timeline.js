@@ -15,7 +15,7 @@
             db[projetoId];
 
         if (!projetoAtual) {
-            window.location.href = 'index.html';
+            window.location.href = urlWorkspace(workspaceAtual ? workspaceAtual.id : null);
         }
 
         let midiaTemporariaNovo = {

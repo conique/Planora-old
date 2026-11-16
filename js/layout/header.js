@@ -13,7 +13,7 @@
             <button class="btn-menu-lateral" id="topo-menu-lateral" type="button" title="Abrir painel lateral" aria-label="Abrir painel lateral" aria-expanded="false" aria-controls="painel-lateral">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
             </button>
-            <a class="marca-P" href="workspaces.html" data-pasta="" data-drop-pasta="" title="Workspaces" aria-label="Planora: voltar para workspaces"><img src="assets/planora-logo.png" alt="" width="34" height="34"></a>
+            <a class="marca-P" href="index.html" data-pasta="" data-drop-pasta="" title="Workspaces" aria-label="Planora: voltar para workspaces"><img src="assets/planora-logo.png" alt="" width="34" height="34"></a>
             <nav class="migalha" id="migalha" aria-label="Navegação"></nav>
         </div>
         <div class="topo-dir${simples ? ' solo' : ''}">
@@ -137,7 +137,10 @@
         }
         const raizLink = document.createElement('a');
         raizLink.className = 'migalha-link';
-        raizLink.href = 'index.html';
+        const apiWorkspaces = window.Planora_Workspaces;
+        raizLink.href = apiWorkspaces && apiWorkspaces.atual
+            ? urlWorkspace(apiWorkspaces.atual.id)
+            : 'index.html';
         raizLink.dataset.pasta = '';
         raizLink.dataset.dropPasta = '';
         raizLink.textContent = nomeRaiz;

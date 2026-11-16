@@ -38,24 +38,28 @@ function workspaceDaSessao(lista) {
     } catch (e) { /* sem escolha anterior */ }
     return null;
 }
+function workspaceDaUrl(lista) {
+    const parametros = new URLSearchParams(location.search);
+    if (!parametros.has('workspace')) return workspaceDaSessao(lista);
+    return lista.find(w => w.id === parametros.get('workspace')) || null;
+}
 function ehTelaWorkspaces() {
-    return location.pathname.split('/').pop() === 'workspaces.html';
+    const pagina = location.pathname.split('/').pop();
+    return pagina === 'index.html' || pagina === '';
 }
-function retornoSeguroWorkspaces(valor) {
-    try {
-        const destino = new URL(valor || 'index.html', location.href);
-        const pagina = destino.pathname.split('/').pop();
-        if (destino.origin !== location.origin || !['index.html', 'cards.html'].includes(pagina)) return 'index.html';
-        return destino.pathname + destino.search + destino.hash;
-    } catch (e) {
-        return 'index.html';
-    }
+function urlTelaWorkspaces() {
+    return 'index.html';
 }
-function urlTelaWorkspaces(retorno) {
-    return 'workspaces.html?return=' + encodeURIComponent(retornoSeguroWorkspaces(retorno));
+function urlWorkspace(id, parametros = {}) {
+    const busca = new URLSearchParams(parametros);
+    if (id) busca.set('workspace', id);
+    const query = busca.toString();
+    return 'workspace.html' + (query ? '?' + query : '');
 }
-function urlRetornoWorkspaces() {
-    return retornoSeguroWorkspaces(new URLSearchParams(location.search).get('return'));
+function urlCardsProjeto(id) {
+    const parametros = new URLSearchParams({ id: String(id) });
+    if (workspaceAtual) parametros.set('workspace', workspaceAtual.id);
+    return 'cards.html?' + parametros.toString();
 }
 /* Caminho do primeiro acesso: dados que só existiam neste navegador (modo local, antes da nuvem). */
 function dadosLocaisAntigos() {
@@ -129,7 +133,7 @@ async function trocarWorkspace(id) {
         if (id) sessionStorage.setItem(SESSAO_WS, JSON.stringify({ u: usuario.id, w: id }));
         else sessionStorage.removeItem(SESSAO_WS);
     } catch (e) { /* sem armazenamento */ }
-    location.href = id ? 'index.html' : urlTelaWorkspaces(location.pathname + location.search + location.hash);
+    location.href = id ? urlWorkspace(id) : urlTelaWorkspaces();
     return true;
 }
 async function novoWorkspaceInterativo() {

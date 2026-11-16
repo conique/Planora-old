@@ -5,7 +5,7 @@ async function iniciarBanco() {
         && typeof SUPABASE_ANON_KEY !== 'undefined' && !SUPABASE_ANON_KEY.startsWith('COLE');
     if (!configurado || typeof supabase === 'undefined') {
         if (paginaWorkspaces) {
-            location.replace(urlRetornoWorkspaces());
+            location.replace('workspace.html');
             return;
         }
         setStatus(!configurado
@@ -23,16 +23,22 @@ async function iniciarBanco() {
     const elEmail = document.getElementById('email-usuario');
     if (elEmail) elEmail.textContent = 'Conectado como ' + usuario.email;
 
-    let alvo, importouLocal = false;
+    let alvo, importouLocal = false, pastaInicial = null;
     try {
         listaWorkspaces = await carregarWorkspaces();
         if (paginaWorkspaces) {
+            pastaInicial = new URLSearchParams(location.search).get('pasta');
+            const workspaceAnterior = pastaInicial ? workspaceDaSessao(listaWorkspaces) : null;
+            if (workspaceAnterior) {
+                location.replace(urlWorkspace(workspaceAnterior.id, { pasta: pastaInicial }));
+                return;
+            }
             alvo = await telaBoasVindas(listaWorkspaces);
         } else {
-            alvo = workspaceDaSessao(listaWorkspaces);
+            alvo = workspaceDaUrl(listaWorkspaces);
             if (!alvo) {
                 window.Planora_REDIRECIONANDO_WORKSPACES = true;
-                location.replace(urlTelaWorkspaces(location.pathname + location.search + location.hash));
+                location.replace(urlTelaWorkspaces());
                 return;
             }
         }
@@ -47,7 +53,7 @@ async function iniciarBanco() {
         return;
     }
     await ativarWorkspace(alvo, importouLocal);
-    if (paginaWorkspaces) location.replace(urlRetornoWorkspaces());
+    if (paginaWorkspaces) location.replace(urlWorkspace(alvo.id, pastaInicial ? { pasta: pastaInicial } : {}));
 }
 const Planora_PRONTO = iniciarBanco().catch(e => { console.error(e); setStatus('Erro de conexão'); });
 

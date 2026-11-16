@@ -26,7 +26,7 @@ function atualizarCaminho() {
     if (!window.Planora_Topo) return;
     const cadeia = caminhoDaPasta(pastaAtual);
     Planora_Topo.definirCaminho(cadeia.map((f, i) => ({
-        nome: f.nome, pasta: f.id, href: i < cadeia.length - 1 ? 'index.html?pasta=' + f.id : null
+        nome: f.nome, pasta: f.id, href: i < cadeia.length - 1 ? urlWorkspace(workspaceAtual ? workspaceAtual.id : null, { pasta: f.id }) : null
     })));
 }
 
