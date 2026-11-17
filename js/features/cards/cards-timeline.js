@@ -446,6 +446,7 @@
             const feed =
                 document.getElementById('feed-timeline');
 
+            Planora_RichText.liberarUrls(feed);
             feed.innerHTML = '';
 
             if (!projetoAtual.cards) {
@@ -517,6 +518,7 @@
                                         class="btn-semaforo ${card.semaforo || 'verde'}"
                                         id="semaforo-${indexReal}"
                                         onclick="event.stopPropagation(); alternarSemaforo(${indexReal})"
+                                        ondblclick="event.stopPropagation()"
                                         title="Status do card: ${card.semaforo || 'verde'} (clique para mudar)"
                                         aria-label="Alterar status do card. Status atual: ${card.semaforo || 'verde'}"
                                         type="button"
@@ -524,7 +526,9 @@
                                     <h3>${card.titulo || ''}</h3>
                                 </div>
 
-                                <p class="legenda-card">${formatarLegenda(card.legenda)}</p>
+                                ${card.conteudoHtml
+                                    ? `<div class="legenda-card rich-content" id="card-body-${indexReal}">${Planora_RichText.sanitizar(card.conteudoHtml)}</div>`
+                                    : `<p class="legenda-card">${formatarLegenda(card.legenda)}</p>`}
 
                                 <div
                                     class="card-midia-container"
@@ -539,6 +543,10 @@
                     feed.appendChild(itemDiv);
 
                     renderizarNotas(indexReal);
-                    carregarMidiaDoCard(card, indexReal);
+                    if (card.conteudoHtml) {
+                        Planora_RichText.hidratar(document.getElementById(`card-body-${indexReal}`), false);
+                    } else {
+                        carregarMidiaDoCard(card, indexReal);
+                    }
                 });
         }

@@ -1,131 +1,45 @@
-/* =========================================================
-           SALVAR EDIÇÃO
-        ========================================================= */
+async function salvarEdicaoCard(index) {
+    const novoTitulo = document.getElementById(`edit-titulo-${index}`).value.trim();
+    if (!novoTitulo) {
+        alert('O título não pode ficar vazio.');
+        return;
+    }
 
-        async function salvarEdicaoCard(index) {
+    const card = projetoAtual.cards[index];
+    const editor = document.getElementById(`edit-legenda-${index}`);
+    const botaoSalvar = document.querySelector(`#card-conteudo-${index} .btn-enviar-card`);
+    const idsAntigos = new Set(Planora_RichText.ids(card.conteudoHtml || ''));
+    if (card.midiaId) idsAntigos.add(card.midiaId);
 
-            const novoTitulo =
-                document.getElementById(
-                    `edit-titulo-${index}`
-                ).value.trim();
-
-            const novaLegenda =
-                document.getElementById(
-                    `edit-legenda-${index}`
-                ).value;
-
-            if (!novoTitulo) {
-
-                alert(
-                    'O título não pode ficar vazio.'
-                );
-
-                return;
-            }
-
-            const dadosMidia =
-                window[
-                    `midiaTemporariaEdicao_${index}`
-                ] || {
-                    blob: null,
-                    tipo: null,
-                    midiaId: null,
-                    removida: false
-                };
-
-            const card =
-                projetoAtual.cards[index];
-
-            try {
-
-                /*
-                 * Se uma nova mídia foi selecionada,
-                 * salva primeiro a nova no IndexedDB.
-                 */
-                if (
-                    dadosMidia.blob
-                ) {
-
-                    const novaMidiaId =
-                        await salvarMidiaBlob(
-                            dadosMidia.blob,
-                            dadosMidia.tipo
-                        );
-
-                    /*
-                     * Apaga a mídia antiga.
-                     */
-                    if (
-                        card.midiaId &&
-                        card.midiaId !== novaMidiaId
-                    ) {
-
-                        await deletarMidiaBlob(
-                            card.midiaId
-                        );
-                    }
-
-                    card.midia =
-                        null;
-
-                    card.midiaId =
-                        novaMidiaId;
-
-                    card.tipoMidia =
-                        dadosMidia.tipo;
-                }
-
-                /*
-                 * Se o usuário removeu a mídia.
-                 */
-                else if (
-                    dadosMidia.removida
-                ) {
-
-                    if (card.midiaId) {
-
-                        await deletarMidiaBlob(
-                            card.midiaId
-                        );
-                    }
-
-                    card.midia =
-                        null;
-
-                    card.midiaId =
-                        null;
-
-                    card.tipoMidia =
-                        null;
-                }
-
-                card.titulo =
-                    novoTitulo;
-
-                card.legenda =
-                    novaLegenda.replace(
-                        /\n/g,
-                        '<br>'
-                    );
-
-                db[projetoId] =
-                    projetoAtual;
-
-                salvarBancoDeDados(db);
-
-                await renderizarTimeline();
-
-            } catch (erro) {
-
-                console.error(
-                    'Erro ao salvar edição:',
-                    erro
-                );
-
-                alert(
-                    'Não foi possível salvar as alterações.\n\n' +
-                    'Erro: ' +
-                    (erro.message || erro)
-                );
-            }
+    try {
+        if (botaoSalvar) {
+            botaoSalvar.disabled = true;
+            botaoSalvar.textContent = 'Salvando...';
         }
+
+        const conteudoHtml = await Planora_RichText.serializar(editor, `edicao-${index}`);
+        const idsNovos = new Set(Planora_RichText.ids(conteudoHtml));
+        for (const id of idsAntigos) {
+            if (!idsNovos.has(id)) await deletarMidiaBlob(id);
+        }
+
+        card.titulo = novoTitulo;
+        card.conteudoHtml = conteudoHtml;
+        card.legenda = '';
+        card.midia = null;
+        card.midiaId = null;
+        card.tipoMidia = null;
+        db[projetoId] = projetoAtual;
+        salvarBancoDeDados(db);
+
+        Planora_RichText.liberar(`edicao-${index}`, document.getElementById(`card-conteudo-${index}`));
+        await renderizarTimeline();
+    } catch (erro) {
+        console.error('Erro ao salvar edição:', erro);
+        alert('Não foi possível salvar as alterações.\n\nErro: ' + (erro.message || erro));
+        if (botaoSalvar) {
+            botaoSalvar.disabled = false;
+            botaoSalvar.textContent = 'Salvar';
+        }
+    }
+}

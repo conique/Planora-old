@@ -2,6 +2,8 @@
            ENVIAR NOVO CARD
         ========================================================= */
 
+        Planora_RichText.aprimorarNovoCard();
+
         async function adicionarCard() {
 
             const titulo =
@@ -9,10 +11,8 @@
                     'inputTituloCard'
                 ).value.trim();
 
-            const legenda =
-                document.getElementById(
-                    'inputLegendaCard'
-                ).value;
+            const editor =
+                document.getElementById('inputLegendaCard');
 
             const botao =
                 document.getElementById(
@@ -37,24 +37,8 @@
 
             try {
 
-                let midiaId = null;
-
-                /*
-                 * AQUI ESTÁ A CORREÇÃO:
-                 * a imagem/vídeo vai para IndexedDB,
-                 * e não para localStorage.
-                 */
-                if (
-                    midiaTemporariaNovo &&
-                    midiaTemporariaNovo.blob
-                ) {
-
-                    midiaId =
-                        await salvarMidiaBlob(
-                            midiaTemporariaNovo.blob,
-                            midiaTemporariaNovo.tipo
-                        );
-                }
+                const conteudoHtml =
+                    await Planora_RichText.serializar(editor, 'novo');
 
                 const agora =
                     new Date();
@@ -74,11 +58,8 @@
 
                     titulo: titulo,
 
-                    legenda:
-                        legenda.replace(
-                            /\n/g,
-                            '<br>'
-                        ),
+                    legenda: '',
+                    conteudoHtml: conteudoHtml,
 
                     data: dataString,
 
@@ -88,11 +69,8 @@
                      */
                     midia: null,
 
-                    tipoMidia:
-                        midiaTemporariaNovo.tipo ||
-                        null,
-
-                    midiaId: midiaId
+                    tipoMidia: null,
+                    midiaId: null
                 };
 
                 projetoAtual.cards.push(
@@ -140,11 +118,10 @@
             const titulo = document.getElementById('inputTituloCard');
             titulo.value = '';
 
-            document.getElementById(
-                'inputLegendaCard'
-            ).value = '';
-
-            removerMidiaNovo();
+            const editor = document.getElementById('inputLegendaCard');
+            if (editor) editor.innerHTML = '';
+            Planora_RichText.liberar('novo');
+            Planora_RichText.aprimorarNovoCard();
 
             if (focar) titulo.focus();
         }
@@ -270,17 +247,15 @@
              * Apaga a mídia correspondente
              * do IndexedDB antes de remover o card.
              */
-            if (card && card.midiaId) {
-
-                try {
-                    await deletarMidiaBlob(
-                        card.midiaId
-                    );
-                } catch (erro) {
-                    console.error(
-                        'Erro ao apagar mídia:',
-                        erro
-                    );
+            if (card) {
+                const idsMidia = new Set(Planora_RichText.ids(card.conteudoHtml || ''));
+                if (card.midiaId) idsMidia.add(card.midiaId);
+                for (const id of idsMidia) {
+                    try {
+                        await deletarMidiaBlob(id);
+                    } catch (erro) {
+                        console.error('Erro ao apagar mídia:', erro);
+                    }
                 }
             }
 

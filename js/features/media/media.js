@@ -66,10 +66,19 @@ async function deletarMidiaBlob(id) {
     if (sb && usuario) await sb.storage.from(BUCKET).remove([usuario.id + '/' + id]);
 }
 async function sincronizarMidiasLocais() {
-    for (const p of lerBancoDeDados())
-        for (const c of (p.cards || []))
-            if (c.midiaId) {
-                const r = await idbOp('readonly', s => s.get(c.midiaId));
-                if (r) try { await enviarMidia(c.midiaId, r.blob, r.tipo); } catch (e) { console.error(e); }
+    for (const p of lerBancoDeDados()) {
+        for (const c of (p.cards || [])) {
+            const ids = new Set(c.midiaId ? [c.midiaId] : []);
+            if (c.conteudoHtml) {
+                const documento = new DOMParser().parseFromString(c.conteudoHtml, 'text/html');
+                documento.querySelectorAll('[data-card-media][data-midia-id]').forEach(elemento => {
+                    if (/^[\w-]{1,160}$/.test(elemento.dataset.midiaId)) ids.add(elemento.dataset.midiaId);
+                });
             }
+            for (const id of ids) {
+                const r = await idbOp('readonly', s => s.get(id));
+                if (r) try { await enviarMidia(id, r.blob, r.tipo); } catch (e) { console.error(e); }
+            }
+        }
+    }
 }
