@@ -239,7 +239,6 @@
                 <option value="P">Texto</option><option value="H2">Título</option><option value="H3">Subtítulo</option><option value="BLOCKQUOTE">Citação</option>
             </select>
             <span class="rich-palette-grupo" role="group" aria-label="Cores do texto">
-                <span>Texto</span>
                 <button type="button" class="rich-text-cor" data-text-color="#111827" style="--cor-texto:#111827" title="Texto preto" aria-label="Texto preto"></button>
                 <button type="button" class="rich-text-cor" data-text-color="#ffffff" style="--cor-texto:#ffffff" title="Texto branco" aria-label="Texto branco"></button>
                 <button type="button" class="rich-text-cor" data-text-color="#2563eb" style="--cor-texto:#2563eb" title="Texto azul" aria-label="Texto azul"></button>
@@ -247,14 +246,14 @@
                 <button type="button" class="rich-text-cor" data-text-color="#15803d" style="--cor-texto:#15803d" title="Texto verde" aria-label="Texto verde"></button>
             </span>
             <span class="rich-palette-grupo" role="group" aria-label="Cores do marca-texto">
-                <span>Marca</span>
+                <span>Grifar</span>
                 <button type="button" class="rich-marca-cor" data-highlight-color="#fff19c" style="--cor-marca:#fff19c" title="Amarelo" aria-label="Marca-texto amarelo"></button>
                 <button type="button" class="rich-marca-cor" data-highlight-color="#b9f6ca" style="--cor-marca:#b9f6ca" title="Verde" aria-label="Marca-texto verde"></button>
                 <button type="button" class="rich-marca-cor" data-highlight-color="#bbdefb" style="--cor-marca:#bbdefb" title="Azul" aria-label="Marca-texto azul"></button>
                 <button type="button" class="rich-marca-cor" data-highlight-color="#f8bbd0" style="--cor-marca:#f8bbd0" title="Rosa" aria-label="Marca-texto rosa"></button>
                 <button type="button" class="rich-marca-limpar" data-action="clear-highlight" title="Remover marca-texto" aria-label="Remover marca-texto">×</button>
             </span>
-            <button type="button" data-action="media" title="Inserir imagem ou vídeo">Imagem/vídeo</button>
+            <button type="button" data-action="media" title="Inserir imagem ou vídeo">Inserir Mídia</button>
             <input id="${id}-arquivo" class="input-file-culto" type="file" accept="image/*,video/*" multiple>
         </div>`;
     }
